@@ -1,8 +1,6 @@
 const db = require('../config/database');
 
 class Properti {
-
-    // GET ALL (optional filter + search + sort)
     static getAll(params, callback) {
         let sql = `SELECT * FROM properti WHERE 1=1`;
         let values = [];
@@ -30,7 +28,6 @@ class Properti {
         db.query(sql, values, callback);
     }
 
-    // GET BY ID (with relation)
     static getById(id, callback) {
         const sql = `
             SELECT 
@@ -47,7 +44,6 @@ class Properti {
         db.query(sql, [id], callback);
     }
 
-    // CREATE
     static create(data, callback) {
         const sql = `INSERT INTO properti SET ?`;
         db.query(sql, data, callback);

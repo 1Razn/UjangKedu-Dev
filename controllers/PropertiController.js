@@ -2,7 +2,6 @@ const Properti = require('../models/properti');
 
 class PropertiController {
 
-    // GET ALL + RELATION
     index(req, res) {
         Properti.getWithRelation((err, result) => {
             if (err) {
@@ -20,7 +19,6 @@ class PropertiController {
         });
     }
 
-    // GET BY ID
     show(req, res) {
         const { id } = req.params;
 
@@ -45,7 +43,6 @@ class PropertiController {
         });
     }
 
-    // CREATE
     store(req, res) {
         const data = req.body;
 
@@ -72,7 +69,6 @@ class PropertiController {
         });
     }
 
-    // UPDATE
     update(req, res) {
         const { id } = req.params;
         const data = req.body;
@@ -99,7 +95,6 @@ class PropertiController {
         });
     }
 
-    // DELETE
     destroy(req, res) {
         const { id } = req.params;
 

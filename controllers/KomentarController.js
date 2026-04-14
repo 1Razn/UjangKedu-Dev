@@ -9,18 +9,19 @@ class KomentarController {
     }
 
     store(req, res) {
-    const data = req.body;
-    Komentar.create(data, (err, results) => {
-        if (err) {
-            
-            return res.status(500).json({ 
-                message: "Gagal mengirim komentar", 
-                error: err.message 
-            });
-        }
-        res.status(201).json({ message: "Komentar berhasil dikirim", data });
-    });
-}
+        const data = req.body;
+        Komentar.create(data, (err, results) => {
+            if (err) {
+
+                return res.status(500).json({
+                    message: "Gagal mengirim komentar",
+                    error: err.message
+                });
+            }
+            res.status(201).json({ message: "Komentar berhasil dikirim", data });
+        });
+    }
+    
     destroy(req, res) {
         const { id } = req.params;
         Komentar.delete(id, (err) => {

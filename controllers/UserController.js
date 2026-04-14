@@ -20,18 +20,36 @@ class UserController {
         });
     }
 
-    store(req, res) {
-        res.send("Add new User");
+    store (req, res) {
+        const newUser = req.body;
+        if (!newUser.nama || !newUser.email || !newUser.password) {
+            return res.status(400).json({ message: 'Nama, Email, dan Password wajib diisi' });
+        }
+
+        User.create(newUser, (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.status(201).json({ message: 'User berhasil dibuat', userId: result.insertId });
+        });
     }
 
-    update(req, res) {
-        const { id } = req.params;
-        res.send(`Update User Id ${id}`);
+    update (req, res) {
+        const id = req.params.id;
+        const updatedData = req.body;
+
+        User.update(id, updatedData, (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (result.affectedRows === 0) return res.status(404).json({ message: 'User tidak ditemukan' });
+            res.status(200).json({ message: 'Data user berhasil diperbarui' });
+        });
     }
 
-    destroy(req, res) {
-        const { id } = req.params;
-        res.send(`Delete User Id ${id}`);
+    destroy (req, res) {
+        const id = req.params.id;
+        User.delete(id, (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (result.affectedRows === 0) return res.status(404).json({ message: 'User tidak ditemukan' });
+            res.status(200).json({ message: 'User berhasil dihapus' });
+        });
     }
 }
 
