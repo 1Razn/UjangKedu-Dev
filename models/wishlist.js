@@ -22,11 +22,6 @@ class Wishlist {
         db.query(sql, [data], callback);  
     }
 
-    static update(id, data, callback) {
-        const sql = 'UPDATE wishlist SET ? WHERE id = ?';
-        db.query(sql, [data, id], callback);
-    }
-
     static delete(id, callback) {
         const sql = 'DELETE FROM wishlist WHERE id = ?';
         db.query(sql, [id], callback);  

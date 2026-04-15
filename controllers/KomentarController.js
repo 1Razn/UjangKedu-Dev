@@ -8,6 +8,14 @@ class KomentarController {
         });
     }
 
+    show(req, res) {
+        const id = req.params.id;
+        Komentar.getById(id, (err, results) => {
+            if (err) return res.status(500).json(err);
+            res.json(results);
+        });
+    }
+
     store(req, res) {
         const data = req.body;
         Komentar.create(data, (err, results) => {
