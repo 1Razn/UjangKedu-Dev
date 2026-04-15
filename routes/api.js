@@ -7,7 +7,6 @@ const PropertiController = require('../controllers/PropertiController');
 const PaketIklanController = require('../controllers/PaketIklanController');
 
 const express = require("express");
-const PaketIklanController = require('../controllers/PaketIklanController');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -20,11 +19,6 @@ router.post("/user", UserController.store);
 router.put("/user/:id", UserController.update);
 router.delete("/user/:id", UserController.destroy);
 
-router.get("/komentar", KomentarController.index);
-router.get("/komentar/:id", KomentarController.show);
-router.post("/komentar", KomentarController.store);
-router.put("/komentar/:id", KomentarController.update);
-router.delete("/komentar/:id", KomentarController.destroy);
 
 router.get("/wishlist", WishlistController.index);
 router.get("/wishlist/:id", WishlistController.show);
