@@ -1,75 +1,60 @@
 const Wishlist = require('../models/wishlist');
+const { validateCreateWishlist, validateId } = require('../validator/wishlistValidate');
 
 class WishlistController {
     index(req, res) {
         Wishlist.getAll((err, result) => {
             if (err) {
-                return res.json({message: 'Gagal mengambil data'});
-            } else {
-                return res.json({message: 'Berhasil mengambil data', data: result});
+                return res.status(500).json({ success: false, message: 'Gagal mengambil data wishlist' });
             }
+            res.status(200).json({ success: true, message: 'Berhasil mengambil data wishlist',  result });
         });
     }
 
     show(req, res) {
         const { id } = req.params;
+        
+        const idError = validateId(id);
+        if (idError) {
+            return res.status(400).json({ success: false, error: idError });
+        }
+
         Wishlist.getById(id, (err, result) => {
             if (err) {
-                return res.json({message: 'Gagal mengambil data'});
-            } 
-            res.json({message: 'Detail wishlist', data: result[0]});
+                return res.status(500).json({ success: false, message: 'Gagal mengambil data' });
+            }
+            if (result.length === 0) {
+                return res.status(404).json({ success: false, message: 'Wishlist tidak ditemukan' });
+            }
+            res.status(200).json({ success: true, message: 'Detail Wishlist', data: result[0] });
         });
     }
 
     store(req, res) {
-        const data = {
-            user_id: req.body.user_id,
-            properti_id: req.body.properti_id
-        };
-
-        if (!data.user_id || !data.properti_id) {
-            return res.status(400).json({ message: 'user_id dan properti_id harus diisi' });
+        const validationErrors = validateCreateWishlist(req.body);
+        if (validationErrors) {
+            return res.status(400).json({ success: false, errors: validationErrors });
         }
 
-        Wishlist.create(data, (err, result) => {
-            if (err) {
-                return res.status(500).json({ message: 'Gagal menambahkan wishlist', error: err });
-            }
-            res.status(201).json({ 
-                message: 'Berhasil ditambahkan ke wishlist', 
-                id: result.insertId 
-            });
-        });
-    }
-
-    update(req, res) {
-        const id = req.params.id;
-        const data = {
-            user_id: req.body.user_id,
-            properti_id: req.body.properti_id
-        };
-
-        Wishlist.update(id, data, (err, result) => {
-            if (err) {
-                return res.status(500).json({ message: 'Gagal memperbarui data', error: err });
-            }
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Data tidak ditemukan' });
-            }
-            res.status(200).json({ message: 'Wishlist berhasil diperbarui' });
+        const newWishlist = req.body;
+        Wishlist.create(newWishlist, (err, result) => {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            res.status(201).json({ success: true, message: 'Wishlist berhasil dibuat', wishlistId: result.insertId });
         });
     }
 
     destroy(req, res) {
         const id = req.params.id;
+        
+        const idError = validateId(id);
+        if (idError) {
+            return res.status(400).json({ success: false, error: idError });
+        }
+
         Wishlist.delete(id, (err, result) => {
-            if (err) {
-                return res.status(500).json({ message: 'Gagal menghapus data', error: err });
-            }
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Data tidak ditemukan' });
-            }
-            res.status(200).json({ message: 'Berhasil menghapus dari wishlist' });
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'Wishlist tidak ditemukan' });
+            res.status(200).json({ success: true, message: 'Wishlist berhasil dihapus' });
         });
     }
 }

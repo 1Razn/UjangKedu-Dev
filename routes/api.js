@@ -27,7 +27,6 @@ router.delete("/komentar/:id", KomentarController.destroy);
 router.get("/wishlist", WishlistController.index);
 router.get("/wishlist/:id", WishlistController.show);
 router.post("/wishlist", WishlistController.store);
-router.put("/wishlist/:id", WishlistController.update);
 router.delete("/wishlist/:id", WishlistController.destroy);
 
 router.get("/laporan", LaporanController.index);
