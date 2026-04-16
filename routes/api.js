@@ -41,7 +41,7 @@ router.put("/kategori_properti/:id", KategoriPropertiController.update);
 router.delete("/kategori_properti/:id", KategoriPropertiController.destroy);
 
 router.get("/properti", PropertiController.index);
-router.get("/properti/:id", PropertiController.show);
+router.get("/properti/:id", PropertiController.show);        
 router.post("/properti", PropertiController.store);
 router.put("/properti/:id", PropertiController.update);
 router.delete("/properti/:id", PropertiController.destroy);

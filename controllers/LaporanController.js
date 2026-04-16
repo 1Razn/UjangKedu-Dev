@@ -1,6 +1,5 @@
 const Laporan = require('../models/laporan');
 const { validateLaporan, validateId } = require('../validator/laporanValidate');
-const errorHandler = require('../validator/errorHandler');
 
 class LaporanController {
     index(req, res) {

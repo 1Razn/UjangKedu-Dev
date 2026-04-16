@@ -5,19 +5,16 @@ class Properti {
         let sql = `SELECT * FROM properti WHERE 1=1`;
         let values = [];
 
-        // filter by user_id
         if (params.user_id) {
             sql += ` AND user_id = ?`;
             values.push(params.user_id);
         }
 
-        // search by judul
         if (params.search) {
             sql += ` AND judul LIKE ?`;
             values.push(`%${params.search}%`);
         }
 
-        // sorting
         if (params.sortBy) {
             const order = params.order === 'desc' ? 'DESC' : 'ASC';
             sql += ` ORDER BY ${params.sortBy} ${order}`;
