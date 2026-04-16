@@ -1,125 +1,63 @@
 const Properti = require('../models/properti');
+const { validateCreateProperti, validateUpdateProperti, validateId } = require('../validator/propertiValidate');
 
 class PropertiController {
-
     index(req, res) {
-        Properti.getWithRelation((err, result) => {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Gagal mengambil data properti',
-                    error: err
-                });
-            }
-
-            res.status(200).json({
-                message: 'Berhasil mengambil data properti',
-                total: result.length,
-                data: result
-            });
+        Properti.getAll({}, (err, result) => {
+            if (err) return res.status(500).json({ success: false, message: 'Gagal mengambil data properti', error: err });
+            res.status(200).json({ success: true, message: 'Berhasil mengambil data properti', total: result.length,  result });
         });
     }
 
     show(req, res) {
-        const { id } = req.params;
+        const idError = validateId(req.params.id);
+        if (idError) return res.status(400).json({ success: false, error: idError });
 
-        Properti.getById(id, (err, result) => {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Gagal mengambil detail properti',
-                    error: err
-                });
-            }
-
-            if (result.length === 0) {
-                return res.status(404).json({
-                    message: 'Properti tidak ditemukan'
-                });
-            }
-
-            res.status(200).json({
-                message: 'Detail properti',
-                data: result[0]
-            });
+        Properti.getById(req.params.id, (err, result) => {
+            if (err) return res.status(500).json({ success: false, message: 'Gagal mengambil detail properti', error: err });
+            if (result.length === 0) return res.status(404).json({ success: false, message: 'Properti tidak ditemukan' });
+            res.status(200).json({ success: true, message: 'Detail properti', data: result[0] });
         });
     }
 
     store(req, res) {
-        const data = req.body;
-
-        // validasi sederhana
-        if (!data.judul || !data.harga || !data.user_id) {
-            return res.status(400).json({
-                message: 'Judul, harga, dan user_id wajib diisi'
-            });
+        const validationErrors = validateCreateProperti(req.body);
+        if (validationErrors) {
+            return res.status(400).json({ success: false, errors: validationErrors });
         }
 
-        Properti.create(data, (err, result) => {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Gagal menambahkan properti',
-                    error: err
-                });
-            }
-
-            res.status(201).json({
-                message: 'Properti berhasil ditambahkan',
-                insertId: result.insertId,
-                data: data
-            });
+        Properti.create(req.body, (err, result) => {
+            if (err) return res.status(500).json({ success: false, message: 'Gagal menambahkan properti', error: err });
+            res.status(201).json({ success: true, message: 'Properti berhasil ditambahkan', propertiId: result.insertId });
         });
     }
 
     update(req, res) {
-        const { id } = req.params;
-        const data = req.body;
+        const idError = validateId(req.params.id);
+        if (idError) return res.status(400).json({ success: false, error: idError });
 
-        Properti.getById(id, (err, result) => {
-            if (result.length === 0) {
-                return res.status(404).json({
-                    message: 'Properti tidak ditemukan'
-                });
-            }
+        const validationError = validateUpdateProperti(req.body);
+        if (validationError) {
+            return res.status(400).json({ success: false, errors: validationError });
+        }
 
-            Properti.update(id, data, (errUpdate) => {
-                if (errUpdate) {
-                    return res.status(500).json({
-                        message: 'Gagal update properti',
-                        error: errUpdate
-                    });
-                }
-
-                res.status(200).json({
-                    message: 'Properti berhasil diupdate'
-                });
-            });
+        Properti.update(req.params.id, req.body, (err, result) => {
+            if (err) return res.status(500).json({ success: false, message: 'Gagal update properti', error: err });
+            if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'Properti tidak ditemukan' });
+            res.status(200).json({ success: true, message: 'Properti berhasil diupdate' });
         });
     }
 
     destroy(req, res) {
-        const { id } = req.params;
+        const idError = validateId(req.params.id);
+        if (idError) return res.status(400).json({ success: false, error: idError });
 
-        Properti.getById(id, (err, result) => {
-            if (result.length === 0) {
-                return res.status(404).json({
-                    message: 'Properti tidak ditemukan'
-                });
-            }
-
-            Properti.delete(id, (errDelete) => {
-                if (errDelete) {
-                    return res.status(500).json({
-                        message: 'Gagal menghapus properti',
-                        error: errDelete
-                    });
-                }
-
-                res.status(200).json({
-                    message: 'Properti berhasil dihapus'
-                });
-            });
+        Properti.delete(req.params.id, (err, result) => {
+            if (err) return res.status(500).json({ success: false, message: 'Gagal menghapus properti', error: err });
+            if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'Properti tidak ditemukan' });
+            res.status(200).json({ success: true, message: 'Properti berhasil dihapus' });
         });
     }
-
 }
 
 module.exports = new PropertiController();
