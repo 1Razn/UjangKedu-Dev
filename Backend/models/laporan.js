@@ -14,7 +14,7 @@ class Laporan {
     static create = (data, callback) => {
         const sql = `
             INSERT INTO laporan SET ?`;
-        db.query(sql, [data], callback);
+        db.query(sql, data, callback);
     };
 
     static delete = (id, callback) => {

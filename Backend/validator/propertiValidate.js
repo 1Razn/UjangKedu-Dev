@@ -8,8 +8,8 @@ function validateCreateProperti(data) {
 
     if (!data.judul || typeof data.judul !== 'string' || data.judul.trim() === '') {
         errors.push('Judul wajib diisi');
-    } else if (data.judul.length > 30) {
-        errors.push('Judul maksimal 30 karakter');
+    } else if (data.judul.length > 20) {
+        errors.push('Judul maksimal 20 karakter');
     }
 
     if (!data.deskripsi || typeof data.deskripsi !== 'string' || data.deskripsi.trim() === '') {

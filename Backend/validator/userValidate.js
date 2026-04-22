@@ -11,8 +11,8 @@ function validateCreateUser(data) {
         errors.push('No HP wajib diisi');
     } else {
         const cleanPhone = String(data.no_hp).replace(/\D/g, '');
-        if (cleanPhone.length > 14) {
-            errors.push('No HP harus kurang dari 14 angka');
+        if (cleanPhone.length > 13) {
+            errors.push('No HP harus kurang dari 13 angka');
         }
     }
 

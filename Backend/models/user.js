@@ -13,7 +13,7 @@ class User {
 
     static create(data, callback) {
         const sql = `INSERT INTO user SET ?`;
-        db.query(sql, [data], callback);
+        db.query(sql, data, callback);
     }
 
     static update(id, data, callback) {

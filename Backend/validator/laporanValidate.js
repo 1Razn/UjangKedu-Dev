@@ -11,8 +11,8 @@ function validateLaporan(data) {
         return "Properti ID tidak valid atau wajib diisi";
     }
 
-    if (!data.user_id1 || isNaN(data.user_id1)) {
-        return "User ID 1 wajib diisi dan harus angka";
+    if (!data.status || isNaN(data.status)) {
+        return "Status tidak valid atau wajib diisi";
     }
 
     return null;

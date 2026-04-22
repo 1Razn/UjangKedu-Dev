@@ -16,9 +16,7 @@ class KomentarController {
         const { id } = req.params;
         
         const idError = validateId(id); 
-        if (idError) {
-            return res.status(400).json({ success: false, error: idError }); 
-        }
+        if (error) return errorHandler(res, error, 400, error);
 
         Komentar.getById(id, (err, result) => {
             if (err) {
@@ -28,14 +26,6 @@ class KomentarController {
                 return res.status(404).json({ success: false, message: 'Komentar tidak ditemukan' }); 
             }
             res.status(200).json({ message: 'Detail Komentar', data: result[0] }); 
-        });
-    }
-
-    show(req, res) {
-        const id = req.params.id;
-        Komentar.getById(id, (err, results) => {
-            if (err) return res.status(500).json(err);
-            res.json(results);
         });
     }
 

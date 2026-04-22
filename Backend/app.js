@@ -1,3 +1,4 @@
+const dotenv = require('dotenv');
 const express = require('express');
 const router = require('./routes/api');
 const db = require('./config/database');
@@ -19,6 +20,6 @@ app.get('/', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('http://localhost:3000/');
+app.listen(process.env.PORT, () => {
+    console.log(`http://localhost:${process.env.PORT}/`);
 });

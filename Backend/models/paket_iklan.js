@@ -13,7 +13,7 @@ class PaketIklan {
 
   static create(data, callback) {
     const sql = 'INSERT INTO paket_iklan SET ?';
-    db.query(sql, [data], callback);
+    db.query(sql, data, callback);
   }
 
   static update(id, data, callback) {

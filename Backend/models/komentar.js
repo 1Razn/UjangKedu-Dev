@@ -13,7 +13,7 @@ class Komentar {
 
     static create(data, callback) {
     const sql = "INSERT INTO komentar SET ?";
-    db.query(sql, [data], callback);
+    db.query(sql, data, callback);
     }
 
     static update(id, data, callback) {
