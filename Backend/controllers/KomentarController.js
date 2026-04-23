@@ -1,14 +1,18 @@
 const Komentar = require("../models/komentar");
 const { validateKomentar, validateId } = require("../validator/komentarValidate");
+const errorHandler = require('../utils/errorHandler');
 
 class KomentarController {
     index(req, res) {
         Komentar.getAll((err, result) => {
             if (err) {
-                return res.status(500).json({ message: 'Gagal mengambil data' }); 
-            } else {
-                return res.status(200).json({ message: 'Berhasil mengambil data', data: result }); 
+                return errorHandler(res, err, 500, 'Gagal mengambil data');
             }
+            res.status(200).json({ 
+                success: true, 
+                message: 'Berhasil mengambil data', 
+                data: result 
+            });
         });
     }
 
@@ -16,45 +20,63 @@ class KomentarController {
         const { id } = req.params;
         
         const idError = validateId(id); 
-        if (error) return errorHandler(res, error, 400, error);
+        if (idError) {
+            return errorHandler(res, new Error(idError), 400, idError);
+        }
 
         Komentar.getById(id, (err, result) => {
             if (err) {
-                return res.status(500).json({ message: 'Gagal mengambil data' }); 
+                return errorHandler(res, err, 500, 'Gagal mengambil data'); 
             }
             if (result.length === 0) {
-                return res.status(404).json({ success: false, message: 'Komentar tidak ditemukan' }); 
+                return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan'); 
             }
-            res.status(200).json({ message: 'Detail Komentar', data: result[0] }); 
+            res.status(200).json({ 
+                success: true, 
+                message: 'Detail Komentar', 
+                data: result[0] 
+            }); 
         });
     }
 
     store(req, res) {
         const validationErrors = validateKomentar(req.body); 
         if (validationErrors) {
-            return res.status(400).json({ success: false, errors: validationErrors }); 
+            return errorHandler(res, new Error(validationErrors), 400, validationErrors); 
         }
 
         const newKomentar = req.body;
         Komentar.create(newKomentar, (err, result) => {
-            if (err) return res.status(500).json({ success: false, error: err.message });
-            res.status(201).json({ success: true, message: 'Komentar berhasil dibuat', komentarId: result.insertId }); 
+            if (err) {
+                return errorHandler(res, err, 500, 'Gagal membuat komentar');
+            }
+            res.status(201).json({ 
+                success: true, 
+                message: 'Komentar berhasil dibuat', 
+                komentarId: result.insertId 
+            }); 
         });
     }
 
     destroy(req, res) {
         const idError = validateId(req.params.id); 
         if (idError) {
-            return res.status(400).json({ success: false, error: idError }); 
+            return errorHandler(res, new Error(idError), 400, idError); 
         }
 
         Komentar.delete(req.params.id, (err, result) => {
-            if (err) return res.status(500).json({ success: false, error: err.message }); 
-            if (result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Komentar tidak ditemukan' });
-            res.status(200).json({ success: true, message: 'Komentar berhasil dihapus' }); 
+            if (err) {
+                return errorHandler(res, err, 500, 'Gagal menghapus komentar'); 
+            }
+            if (result.affectedRows === 0) {
+                return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan');
+            }
+            res.status(200).json({ 
+                success: true, 
+                message: 'Komentar berhasil dihapus' 
+            }); 
         });
     }
 }
 
-const object = new KomentarController(); 
-module.exports = object; 
+module.exports = new KomentarController();

@@ -1,26 +1,23 @@
 const Auth = require('../models/Auth');
-const { validateRegister, validateLogin } = require('../validator/authValidator');
+const { validateRegister, validateLogin } = require('../validator/authValidate');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 class AuthController {
-    // REGISTER
     async register(req, res) {
         const data = req.body;
 
-        // Validasi input
         const validationErrors = validateRegister(data);
         if (validationErrors) {
             return res.status(400).json({
                 success: false,
-                message: 'Validasi gagal',
+                message: 'Gagal melakukan registrasi',
                 errors: validationErrors
             });
         }
 
         try {
-            // Cek apakah email sudah terdaftar
             Auth.findByEmail(data.email, async (err, existingUser) => {
                 if (err) {
                     return res.status(500).json({
@@ -38,11 +35,9 @@ class AuthController {
                     });
                 }
 
-                // Hash password
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(data.password, salt);
 
-                // Simpan user ke database
                 const userData = {
                     nama: data.nama.trim(),
                     no_hp: data.no_hp,
@@ -80,11 +75,9 @@ class AuthController {
         }
     }
 
-    // LOGIN
     async login(req, res) {
         const data = req.body;
 
-        // Validasi input
         const validationErrors = validateLogin(data);
         if (validationErrors) {
             return res.status(400).json({
@@ -95,7 +88,6 @@ class AuthController {
         }
 
         try {
-            // Cari user berdasarkan email
             Auth.findByEmail(data.email.trim(), async (err, user) => {
                 if (err) {
                     return res.status(500).json({
@@ -113,7 +105,6 @@ class AuthController {
                     });
                 }
 
-                // Verifikasi password
                 const isPasswordValid = await bcrypt.compare(data.password, user.password);
                 
                 if (!isPasswordValid) {
@@ -124,7 +115,6 @@ class AuthController {
                     });
                 }
 
-                // Buat JWT Token
                 const payload = {
                     id: user.id,
                     email: user.email,
@@ -158,9 +148,7 @@ class AuthController {
         }
     }
 
-    // GET PROFILE (Protected Route)
     getProfile(req, res) {
-        // req.user sudah ada dari middleware auth
         res.status(200).json({
             success: true,
             message: 'Profil berhasil diambil',

@@ -1,10 +1,10 @@
 const Laporan = require('../models/laporan');
 const { validateLaporan, validateId } = require('../validator/laporanValidate');
-const errorHandler = require('../utils/errorHandler'); 
+const errorHandler = require('../utils/errorHandler');
+
 class LaporanController {
     index(req, res) {
-        Laporan.getAll((err, results) => {    
-            
+        Laporan.getAll((err, results) => {
             if (err) return errorHandler(res, err, 500, "Gagal ambil data");
             
             res.json({ 
@@ -19,13 +19,13 @@ class LaporanController {
         const id = req.params.id;
         
         const error = validateId(id);
-        if (error) return errorHandler(res, error, 400, error);
+        if (error) return errorHandler(res, new Error(error), 400, error);
 
         Laporan.getById(id, (err, results) => {
             if (err) return errorHandler(res, err, 500, "Terjadi kesalahan database");
             
             if (!results || results.length === 0) {
-                return errorHandler(res, "Not Found", 404, "Data tidak ditemukan");
+                return errorHandler(res, new Error("Not Found"), 404, "Data tidak ditemukan");
             }
 
             res.json({
@@ -40,7 +40,7 @@ class LaporanController {
         const data = req.body;
         
         const error = validateLaporan(data);
-        if (error) return errorHandler(res, error, 400, error);
+        if (error) return errorHandler(res, new Error(error), 400, error);
 
         Laporan.create(data, (err, results) => {
             if (err) return errorHandler(res, err, 500, "Gagal tambah data");
@@ -57,10 +57,14 @@ class LaporanController {
         const id = req.params.id;
         
         const error = validateId(id);
-        if (error) return errorHandler(res, error, 400, error);
+        if (error) return errorHandler(res, new Error(error), 400, error);
 
         Laporan.delete(id, (err, results) => {
             if (err) return errorHandler(res, err, 500, "Gagal hapus data");
+            
+            if (results.affectedRows === 0) {
+                return errorHandler(res, new Error("Not Found"), 404, "Data tidak ditemukan");
+            }
             
             res.json({
                 success: true,
