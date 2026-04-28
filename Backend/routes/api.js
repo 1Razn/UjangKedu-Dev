@@ -5,6 +5,8 @@ const LaporanController = require('../controllers/LaporanController');
 const KategoriPropertiController = require('../controllers/KategoriPropertiController');
 const PropertiController = require('../controllers/PropertiController');
 const PaketIklanController = require('../controllers/PaketIklanController');
+const errorHandler = require('../utils/errorHandler');
+const upload = require('../middleware/upload');
 
 const express = require("express");
 const router = express.Router();
@@ -12,6 +14,18 @@ const router = express.Router();
 const authRoutes = require('./auth');
 const authenticateToken = require('../middleware/auth');
 const authorize = require('../middleware/authorize');
+
+const handleMulterUpload = (uploadFn, maxMb) => (req, res, next) => {
+    uploadFn(req, res, (err) => {
+        if (err) {
+            const message = err.code === 'LIMIT_FILE_SIZE'
+                ? `Ukuran file melebihi batas ${maxMb}MB.`
+                : err.message || 'Gagal memproses file upload.';
+            return errorHandler(res, err, 400, message);
+        }
+        next();
+    });
+};
 
 router.use('/auth', authRoutes);
 
@@ -21,9 +35,9 @@ router.get('/', (req, res) => {
 
 router.get("/user", authenticateToken, authorize('Admin'), UserController.index);
 router.get("/user/:id", authenticateToken, UserController.show);
-router.post("/user", UserController.store);
-router.put("/user/:id", authenticateToken, UserController.update);
-router.delete("/user/:id", authenticateToken, authorize('Admin'), UserController.destroy);
+router.post('/user', upload.profile.single('foto_profil'), UserController.store);
+router.put('/user/:id', authenticateToken, upload.profile.single('foto_profil'), UserController.update);
+router.delete("/user/:id", authenticateToken, UserController.destroy);
 
 router.get("/komentar", KomentarController.index);
 router.get("/komentar/:id", KomentarController.show);
@@ -47,12 +61,12 @@ router.put("/kategori_properti/:id", authenticateToken, authorize('Admin'), Kate
 router.delete("/kategori_properti/:id", authenticateToken, authorize('Admin'), KategoriPropertiController.destroy);
 
 router.get("/properti", PropertiController.index);
-router.get("/properti/:id", PropertiController.show);        
-router.post("/properti", authenticateToken, PropertiController.store);
-router.put("/properti/:id", authenticateToken, PropertiController.update);
+router.get("/properti/:id", PropertiController.show);
+router.post("/properti", authenticateToken, upload.properti.single('foto_properti'), PropertiController.store);
+router.put("/properti/:id", authenticateToken, upload.properti.single('foto_properti'), PropertiController.update);
 router.delete("/properti/:id", authenticateToken, PropertiController.destroy);
 
-router.get("/iklan", PaketIklanController.index); 
+router.get("/iklan", PaketIklanController.index);
 router.get("/iklan/:id", PaketIklanController.show);
 router.post("/iklan", authenticateToken, authorize('Admin'), PaketIklanController.store);
 router.put("/iklan/:id", authenticateToken, authorize('Admin'), PaketIklanController.update);

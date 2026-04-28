@@ -1,12 +1,9 @@
-// utils/errorHandler.js
-
 const errorHandler = (res, error, status = 500, message = "Terjadi kesalahan") => {
-    console.error(error); 
-    
+    console.error(error);
     return res.status(status).json({
         success: false,
         message: message,
-        error: error?.message || error 
+        error: error?.message || error
     });
 };
 

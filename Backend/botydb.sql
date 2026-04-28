@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2026 at 03:27 PM
+-- Generation Time: Apr 28, 2026 at 03:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -89,8 +89,8 @@ CREATE TABLE `paket_iklan` (
 --
 
 INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
-(1, 'Bronze', '7 Hari', '50000', 'Paket hemat untuk pemula'),
-(2, 'Silver', '30 Hari', '150000', 'Paket populer untuk agen'),
+(1, 'Bronze', '7 Hari', '50000', 'Paket hemat'),
+(2, 'Silver', '30 Hari', '150000', 'Paket populer'),
 (3, 'Gold', '90 Hari', '400000', 'Paket premium dengan fitur highlight');
 
 -- --------------------------------------------------------
@@ -110,15 +110,16 @@ CREATE TABLE `properti` (
   `tanggal_kadaluarsa` date NOT NULL,
   `kategori_properti_id` int(11) NOT NULL,
   `paket_iklan_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `foto_properti` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `properti`
 --
 
-INSERT INTO `properti` (`id`, `judul`, `deskripsi`, `alamat`, `luas_properti`, `harga`, `tanggal_tayang`, `tanggal_kadaluarsa`, `kategori_properti_id`, `paket_iklan_id`, `user_id`) VALUES
-(1, 'Properti Dummy', 'Untuk testing', 'Alamat Test', '100', '500jt', '0000-00-00', '0000-00-00', 1, 1, 1);
+INSERT INTO `properti` (`id`, `judul`, `deskripsi`, `alamat`, `luas_properti`, `harga`, `tanggal_tayang`, `tanggal_kadaluarsa`, `kategori_properti_id`, `paket_iklan_id`, `user_id`, `foto_properti`) VALUES
+(1, 'Properti Dummy', 'Untuk testing', 'Alamat Test', '100', '500jt', '0000-00-00', '0000-00-00', 1, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -131,6 +132,7 @@ CREATE TABLE `user` (
   `nama` varchar(30) NOT NULL,
   `no_hp` char(13) NOT NULL,
   `email` varchar(35) NOT NULL,
+  `foto_profil` varchar(255) DEFAULT NULL,
   `password` varchar(70) NOT NULL,
   `role` enum('Admin','User') NOT NULL DEFAULT 'User'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -139,9 +141,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `password`, `role`) VALUES
-(1, 'Saya', '088321', 'saya@gmail.com', 'admin123', 'User'),
-(2, 'tes', '087642344', 'tes@example.com', 'test1234', 'User');
+INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `foto_profil`, `password`, `role`) VALUES
+(1, 'Admin', '081234567890', 'admin@boty.com', NULL, '$2b$10$yPTBQO7vMuzZqbBaOOoXNuWz/55efCmuNwbr7NbiKXR0lmDVKSay.', 'Admin');
 
 -- --------------------------------------------------------
 
@@ -158,10 +159,6 @@ CREATE TABLE `wishlist` (
 --
 -- Dumping data for table `wishlist`
 --
-
-INSERT INTO `wishlist` (`id`, `user_id`, `properti_id`) VALUES
-(6, 1, 1),
-(5, 2, 1);
 
 --
 -- Indexes for dumped tables
@@ -258,7 +255,7 @@ ALTER TABLE `properti`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `wishlist`

@@ -2,37 +2,31 @@ const Auth = require('../models/Auth');
 const { validateRegister, validateLogin } = require('../validator/authValidate');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
+const errorHandler = require('../utils/errorHandler');
 require('dotenv').config();
 
 class AuthController {
     async register(req, res) {
         const data = req.body;
-
+        
         const validationErrors = validateRegister(data);
         if (validationErrors) {
-            return res.status(400).json({
-                success: false,
-                message: 'Gagal melakukan registrasi',
-                errors: validationErrors
-            });
+            if (req.file) fs.unlinkSync(req.file.path); 
+            return errorHandler(res, new Error(validationErrors.join(', ')), 400, validationErrors.join(', '));
         }
 
         try {
             Auth.findByEmail(data.email, async (err, existingUser) => {
                 if (err) {
-                    return res.status(500).json({
-                        success: false,
-                        message: 'Terjadi kesalahan server',
-                        error: err.message
-                    });
+                    if (req.file) fs.unlinkSync(req.file.path);
+                    return errorHandler(res, err, 500, 'Terjadi kesalahan server');
                 }
 
                 if (existingUser) {
-                    return res.status(409).json({
-                        success: false,
-                        message: 'Email sudah terdaftar',
-                        error: 'Email sudah digunakan'
-                    });
+                    if (req.file) fs.unlinkSync(req.file.path);
+                    return errorHandler(res, new Error('Email sudah digunakan'), 409, 'Email sudah terdaftar');
                 }
 
                 const salt = await bcrypt.genSalt(10);
@@ -43,16 +37,14 @@ class AuthController {
                     no_hp: data.no_hp,
                     email: data.email.trim(),
                     password: hashedPassword,
-                    role: data.role || 'User'
+                    role: data.role || 'User',
+                    foto_profil: req.file ? `uploads/profile/${req.file.filename}` : null 
                 };
 
                 Auth.register(userData, (err, result) => {
                     if (err) {
-                        return res.status(500).json({
-                            success: false,
-                            message: 'Gagal mendaftarkan user',
-                            error: err.message
-                        });
+                        if (req.file) fs.unlinkSync(req.file.path); 
+                        return errorHandler(res, err, 500, 'Gagal mendaftarkan user');
                     }
 
                     res.status(201).json({
@@ -61,69 +53,35 @@ class AuthController {
                         data: {
                             userId: result.insertId,
                             email: userData.email,
-                            role: userData.role
+                            role: userData.role,
+                            foto_profil: userData.foto_profil 
                         }
                     });
                 });
             });
         } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: 'Terjadi kesalahan server',
-                error: error.message
-            });
+            if (req.file) fs.unlinkSync(req.file.path);
+            errorHandler(res, error, 500, 'Terjadi kesalahan server');
         }
     }
 
     async login(req, res) {
         const data = req.body;
-
         const validationErrors = validateLogin(data);
         if (validationErrors) {
-            return res.status(400).json({
-                success: false,
-                message: 'Validasi gagal',
-                errors: validationErrors
-            });
+            return errorHandler(res, new Error(validationErrors.join(', ')), 400, validationErrors.join(', '));
         }
 
         try {
             Auth.findByEmail(data.email.trim(), async (err, user) => {
-                if (err) {
-                    return res.status(500).json({
-                        success: false,
-                        message: 'Terjadi kesalahan server',
-                        error: err.message
-                    });
-                }
-
-                if (!user) {
-                    return res.status(401).json({
-                        success: false,
-                        message: 'Email atau password salah',
-                        error: 'User tidak ditemukan'
-                    });
-                }
+                if (err) return errorHandler(res, err, 500, 'Terjadi kesalahan server');
+                if (!user) return errorHandler(res, new Error('User tidak ditemukan'), 401, 'Email atau password salah');
 
                 const isPasswordValid = await bcrypt.compare(data.password, user.password);
-                
-                if (!isPasswordValid) {
-                    return res.status(401).json({
-                        success: false,
-                        message: 'Email atau password salah',
-                        error: 'Password tidak sesuai'
-                    });
-                }
+                if (!isPasswordValid) return errorHandler(res, new Error('Password tidak sesuai'), 401, 'Email atau password salah');
 
-                const payload = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role
-                };
-
-                const token = jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: process.env.JWT_EXPIRES_IN || '24h'
-                });
+                const payload = { id: user.id, email: user.email, role: user.role };
+                const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
 
                 res.status(200).json({
                     success: true,
@@ -134,17 +92,14 @@ class AuthController {
                             id: user.id,
                             nama: user.nama,
                             email: user.email,
-                            role: user.role
+                            role: user.role,
+                            foto_profil: user.foto_profil 
                         }
                     }
                 });
             });
         } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: 'Terjadi kesalahan server',
-                error: error.message
-            });
+            errorHandler(res, error, 500, 'Terjadi kesalahan server');
         }
     }
 

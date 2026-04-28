@@ -46,37 +46,31 @@ class Properti {
         db.query(sql, data, callback);
     }
 
-    // UPDATE (partial update)
     static update(id, data, callback) {
         const sql = `UPDATE properti SET ? WHERE id = ?`;
         db.query(sql, [data, id], callback);
     }
 
-    // DELETE
     static delete(id, callback) {
         const sql = `DELETE FROM properti WHERE id = ?`;
         db.query(sql, [id], callback);
     }
 
-    // CHECK EXIST
     static exists(id, callback) {
         const sql = `SELECT id FROM properti WHERE id = ?`;
         db.query(sql, [id], callback);
     }
 
-    // GET BY USER
     static getByUser(user_id, callback) {
         const sql = `SELECT * FROM properti WHERE user_id = ? ORDER BY id DESC`;
         db.query(sql, [user_id], callback);
     }
 
-    // PAGINATION
     static getPaginated(limit, offset, callback) {
         const sql = `SELECT * FROM properti LIMIT ? OFFSET ?`;
         db.query(sql, [parseInt(limit), parseInt(offset)], callback);
     }
 
-    // COUNT TOTAL DATA
     static count(callback) {
         const sql = `SELECT COUNT(*) as total FROM properti`;
         db.query(sql, callback);
