@@ -11,8 +11,14 @@ function validateLaporan(data) {
         return "Properti ID tidak valid atau wajib diisi";
     }
 
-    if (!data.status || isNaN(data.status)) {
-        return "Status tidak valid atau wajib diisi";
+    if (!data.status) {
+        return "Status wajib diisi";
+    }
+
+    const validStatuses = ['pending', 'diterima', 'ditolak'];
+    
+    if (!validStatuses.includes(data.status)) {
+        return "Status tidak valid. Pilihan: pending, diterima, atau ditolak";
     }
 
     return null;
@@ -20,9 +26,9 @@ function validateLaporan(data) {
 
 function validateId(id) {
     if (!id || isNaN(id)) {
-        return "ID tidak valid"; 
+        return "ID tidak valid";
     }
-    return null; 
+    return null;
 }
 
-module.exports = { validateLaporan, validateId }; 
+module.exports = { validateLaporan, validateId };

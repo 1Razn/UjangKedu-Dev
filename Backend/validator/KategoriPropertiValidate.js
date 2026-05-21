@@ -1,22 +1,10 @@
-/**
- * Validator untuk tabel `kategori_properti`
- */
-
 function validateCreateKategoriProperti(data) {
     const errors = [];
 
-    // 1. Nama Kategori (varchar(50))
-    if (!data.nama || typeof data.nama !== 'string' || data.nama.trim() === '') {
+    if (!data.nama_kategori || typeof data.nama_kategori !== 'string' || data.nama_kategori.trim() === '') {
         errors.push('Nama kategori wajib diisi');
-    } else if (data.nama.length > 50) {
-        errors.push('Nama kategori maksimal 50 karakter');
-    }
-
-    // 2. Deskripsi (text) - optional
-    if (data.deskripsi !== undefined && data.deskripsi !== null) {
-        if (typeof data.deskripsi !== 'string') {
-            errors.push('Deskripsi harus berupa teks');
-        }
+    } else if (data.nama_kategori.length > 30) {
+        errors.push('Nama kategori maksimal 30 karakter');
     }
 
     return errors.length > 0 ? errors : null;
@@ -25,16 +13,9 @@ function validateCreateKategoriProperti(data) {
 function validateUpdateKategoriProperti(data) {
     const errors = [];
 
-    // Validasi partial update (hanya cek field yang dikirim)
-    if (data.nama !== undefined) {
-        if (typeof data.nama !== 'string' || data.nama.trim() === '' || data.nama.length > 50) {
-            errors.push('Nama kategori maksimal 50 karakter dan tidak boleh kosong');
-        }
-    }
-
-    if (data.deskripsi !== undefined && data.deskripsi !== null) {
-        if (typeof data.deskripsi !== 'string') {
-            errors.push('Deskripsi harus berupa teks');
+    if (data.nama_kategori !== undefined) {
+        if (typeof data.nama_kategori !== 'string' || data.nama_kategori.trim() === '' || data.nama_kategori.length > 30) {
+            errors.push('Nama kategori maksimal 30 karakter dan tidak boleh kosong');
         }
     }
 

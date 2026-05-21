@@ -2,11 +2,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const authenticateToken = (req, res, next) => {
-    // Ambil token dari header Authorization
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+    const token = authHeader && authHeader.split(' ')[1];
 
-    // Cek apakah token ada
     if (!token) {
         return res.status(401).json({
             success: false,
@@ -15,7 +13,6 @@ const authenticateToken = (req, res, next) => {
         });
     }
 
-    // Verifikasi token
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             if (err.name === 'TokenExpiredError') {
@@ -33,10 +30,10 @@ const authenticateToken = (req, res, next) => {
             });
         }
 
-        // Simpan data user di request
         req.user = user;
-        next(); // Lanjutkan ke controller
+        next(); 
     });
 };
 
 module.exports = authenticateToken;
+

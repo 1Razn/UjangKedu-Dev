@@ -1,5 +1,5 @@
 const Komentar = require("../models/komentar");
-const { validateKomentar, validateId } = require("../validator/komentarValidate");
+const { validateKomentar, validateKomentarExistence, validateId } = require("../validator/komentarValidate");
 const errorHandler = require('../utils/errorHandler');
 
 class KomentarController {
@@ -8,10 +8,10 @@ class KomentarController {
             if (err) {
                 return errorHandler(res, err, 500, 'Gagal mengambil data');
             }
-            res.status(200).json({ 
-                success: true, 
-                message: 'Berhasil mengambil data', 
-                data: result 
+            res.status(200).json({
+                success: true,
+                message: 'Berhasil mengambil data',
+                data: result
             });
         });
     }
@@ -39,10 +39,15 @@ class KomentarController {
         });
     }
 
-    store(req, res) {
-        const validationErrors = validateKomentar(req.body); 
-        if (validationErrors) {
-            return errorHandler(res, new Error(validationErrors), 400, validationErrors); 
+    async store(req, res) {
+        const validationError = validateKomentar(req.body); 
+        if (validationError) {
+            return errorHandler(res, new Error(validationError), 400, validationError); 
+        }
+
+        const existenceErrors = await validateKomentarExistence(req.body);
+        if (existenceErrors) {
+            return errorHandler(res, new Error(existenceErrors.join(', ')), 400, existenceErrors.join(', '));
         }
 
         const newKomentar = req.body;

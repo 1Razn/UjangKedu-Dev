@@ -54,11 +54,11 @@ router.get("/laporan/:id", authenticateToken, LaporanController.show);
 router.post("/laporan", authenticateToken, LaporanController.store);
 router.delete("/laporan/:id", authenticateToken, authorize('Admin'), LaporanController.destroy);
 
-router.get("/kategori_properti", KategoriPropertiController.index);
-router.get("/kategori_properti/:id", KategoriPropertiController.show);
-router.post("/kategori_properti", authenticateToken, authorize('Admin'), KategoriPropertiController.store);
-router.put("/kategori_properti/:id", authenticateToken, authorize('Admin'), KategoriPropertiController.update);
-router.delete("/kategori_properti/:id", authenticateToken, authorize('Admin'), KategoriPropertiController.destroy);
+router.get("/kategori", KategoriPropertiController.index);
+router.get("/kategori/:id", KategoriPropertiController.show);
+router.post("/kategori", authenticateToken, authorize('Admin'), KategoriPropertiController.store);
+router.put("/kategori/:id", authenticateToken, authorize('Admin'), KategoriPropertiController.update);
+router.delete("/kategori/:id", authenticateToken, authorize('Admin'), KategoriPropertiController.destroy);
 
 router.get("/properti", PropertiController.index);
 router.get("/properti/:id", PropertiController.show);

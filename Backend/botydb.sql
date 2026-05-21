@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2026 at 03:26 PM
+-- Generation Time: May 02, 2026 at 04:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -36,12 +36,6 @@ CREATE TABLE `kategori_properti` (
 -- Dumping data for table `kategori_properti`
 --
 
-INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
-(1, 'Rumah'),
-(2, 'Ruko'),
-(3, 'Tanah'),
-(4, 'Apartemen');
-
 -- --------------------------------------------------------
 
 --
@@ -56,6 +50,10 @@ CREATE TABLE `komentar` (
   `komentar_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Dumping data for table `komentar`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -65,7 +63,7 @@ CREATE TABLE `komentar` (
 CREATE TABLE `laporan` (
   `id` int(11) NOT NULL,
   `keterangan` text NOT NULL,
-  `pelapor_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `properti_id` int(11) NOT NULL,
   `status` enum('pending','diterima','ditolak') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -87,11 +85,6 @@ CREATE TABLE `paket_iklan` (
 --
 -- Dumping data for table `paket_iklan`
 --
-
-INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
-(1, 'Bronze', '7 Hari', '50000', 'Paket hemat'),
-(2, 'Silver', '30 Hari', '150000', 'Paket populer'),
-(3, 'Gold', '90 Hari', '400000', 'Paket premium dengan fitur highlight');
 
 -- --------------------------------------------------------
 
@@ -118,9 +111,6 @@ CREATE TABLE `properti` (
 -- Dumping data for table `properti`
 --
 
-INSERT INTO `properti` (`id`, `judul`, `deskripsi`, `alamat`, `luas_properti`, `harga`, `tanggal_tayang`, `tanggal_kadaluarsa`, `kategori_properti_id`, `paket_iklan_id`, `user_id`, `foto_properti`) VALUES
-(1, 'Properti Dummy', 'Untuk testing', 'Alamat Test', '100', '500jt', '0000-00-00', '0000-00-00', 1, 1, 1, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -140,9 +130,6 @@ CREATE TABLE `user` (
 --
 -- Dumping data for table `user`
 --
-
-INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `foto_profil`, `password`, `role`) VALUES
-(1, 'Admin', '081234567890', 'admin@boty.com', NULL, '$2b$10$yPTBQO7vMuzZqbBaOOoXNuWz/55efCmuNwbr7NbiKXR0lmDVKSay.', 'Admin');
 
 -- --------------------------------------------------------
 
@@ -184,8 +171,8 @@ ALTER TABLE `komentar`
 --
 ALTER TABLE `laporan`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_laporan_pelapor_idx` (`pelapor_id`),
-  ADD KEY `fk_laporan_properti_idx` (`properti_id`);
+  ADD KEY `fk_laporan_properti_idx` (`properti_id`),
+  ADD KEY `fk_laporan_user_idx` (`user_id`);
 
 --
 -- Indexes for table `paket_iklan`
@@ -231,7 +218,7 @@ ALTER TABLE `kategori_properti`
 -- AUTO_INCREMENT for table `komentar`
 --
 ALTER TABLE `komentar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `laporan`
@@ -255,7 +242,7 @@ ALTER TABLE `properti`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
@@ -279,8 +266,8 @@ ALTER TABLE `komentar`
 -- Constraints for table `laporan`
 --
 ALTER TABLE `laporan`
-  ADD CONSTRAINT `fk_laporan_pelapor` FOREIGN KEY (`pelapor_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_laporan_properti` FOREIGN KEY (`properti_id`) REFERENCES `properti` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_laporan_properti` FOREIGN KEY (`properti_id`) REFERENCES `properti` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_laporan_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `properti`
