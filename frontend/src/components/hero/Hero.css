@@ -1,0 +1,66 @@
+.hero {
+  position: relative;
+  background: var(--gradient-hero);
+  color: var(--white);
+  padding: 72px 0 96px;
+  overflow: hidden;
+}
+.hero-pattern {
+  position: absolute; inset: 0; opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%23fff' stroke-width='1'/%3E%3C/svg%3E");
+}
+.hero-inner { position: relative; }
+.hero-headline { text-align: center; max-width: 720px; margin: 0 auto 28px; }
+.hero-headline h1 {
+  font-size: clamp(28px, 4.5vw, 46px);
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+.hero-headline p { font-size: 17px; opacity: 0.9; }
+
+.hero-search {
+  max-width: 880px; margin: 0 auto;
+  background: var(--white); color: var(--text);
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.hero-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.hero-tab {
+  padding: 8px 18px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-muted);
+  transition: all 0.15s;
+}
+.hero-tab:hover { color: var(--primary); }
+.hero-tab.active { background: var(--primary-soft); color: var(--primary); }
+
+.hero-search-form { display: flex; gap: 10px; }
+.hero-input-wrap { position: relative; flex: 1; }
+.hero-input-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted);
+}
+.hero-input-wrap input {
+  width: 100%; height: 50px; padding: 0 16px 0 42px;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  font-size: 15px; outline: none;
+  transition: border-color 0.15s;
+}
+.hero-input-wrap input:focus { border-color: var(--primary); }
+.hero-search-form .btn-lg { height: 50px; }
+
+.hero-popular {
+  margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; font-size: 14px;
+}
+.hero-popular > span { opacity: 0.85; }
+.hero-tag {
+  padding: 4px 12px; border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 999px; transition: background 0.15s;
+}
+.hero-tag:hover { background: rgba(255,255,255,0.15); }
+
+@media (max-width: 640px) {
+  .hero-search-form { flex-direction: column; }
+}
