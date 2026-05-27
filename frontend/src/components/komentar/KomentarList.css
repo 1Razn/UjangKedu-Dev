@@ -1,0 +1,59 @@
+/* src/components/komentar/KomentarList.css */
+
+.komentar-section {
+  background-color: #f8fafc;
+  padding: 40px 20px;
+}
+
+.komentar-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.komentar-title {
+  margin-bottom: 20px;
+}
+
+.komentar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.komentar-item {
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.komentar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.komentar-name {
+  color: #1d4ed8;
+  font-weight: bold;
+}
+
+.komentar-id {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.komentar-text {
+  margin: 0;
+  color: #334155;
+  font-size: 15px;
+}
+
+.komentar-status {
+  text-align: center;
+  padding: 20px;
+}
+
+.komentar-error {
+  color: red;
+}

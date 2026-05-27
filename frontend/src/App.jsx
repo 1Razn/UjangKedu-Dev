@@ -5,6 +5,7 @@ import Featured from "./components/fitur/Main_content.jsx";
 import Features from "./components/fitur/List_fitur.jsx";
 import CTA from "./components/Promosi/Promosi.jsx";
 import Footer from "./components/footer/Footer.jsx";
+import KomentarList from "./components/komentar/KomentarList.jsx";
 
 export default function App() {
   return (
@@ -16,6 +17,8 @@ export default function App() {
         <Featured />
         <Features />
         <CTA />
+        {}
+        <KomentarList />
       </main>
       <Footer />
     </div>
