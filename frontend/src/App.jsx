@@ -1,9 +1,9 @@
 import Navbar from "./components/navbar/Navbar.jsx";
 import Hero from "./components/hero/Hero.jsx";
-import Categories from "./components/kategori/Kategori.jsx";
-import Featured from "./components/fitur/Main_content.jsx";
-import Features from "./components/fitur/List_fitur.jsx";
-import CTA from "./components/Promosi/Promosi.jsx";
+import Kategori from "./components/kategori/Kategori.jsx";
+import Main_content from "./components/fitur/Main_content.jsx";
+import List_fitur from "./components/fitur/List_fitur.jsx";
+import Promosi from "./components/Promosi/Promosi.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import KomentarList from "./components/komentar/KomentarList.jsx";
 
@@ -13,10 +13,10 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
-        <Categories />
-        <Featured />
-        <Features />
-        <CTA />
+        <Kategori />
+        <Main_content />
+        <List_fitur />
+        <Promosi />
         {}
         <KomentarList />
       </main>
