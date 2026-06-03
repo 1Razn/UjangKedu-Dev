@@ -1,7 +1,8 @@
 .categories-section {
-  margin-top: -48px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   position: relative;
-  z-index: 5;
+  z-index: 1;
   padding-bottom: 24px;
 }
 .categories-grid {
@@ -16,12 +17,16 @@
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
 }
-.category-card:hover {
+.category-card:hover,
+.category-card.active {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
   border-color: var(--primary);
+}
+.category-card.active {
+  background: rgba(77, 66, 255, 0.08);
 }
 .category-icon {
   display: inline-flex; align-items: center; justify-content: center;

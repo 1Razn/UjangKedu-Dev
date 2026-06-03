@@ -1,11 +1,187 @@
+.promo-preview,
+.promo-page {
+  margin-top: 48px;
+}
+
+.promo-header,
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.promo-header .section-title,
+.section-head .section-title {
+  margin-bottom: 8px;
+}
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.package-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.package-card.selected {
+  border-color: rgba(59, 130, 246, 0.7);
+  box-shadow: 0 16px 40px rgba(59, 130, 246, 0.12);
+}
+
+.package-select-btn {
+  align-self: flex-start;
+}
+
+.promo-form-wrapper {
+  margin-top: 36px;
+  padding: 30px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.form-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.selected-package-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 14px;
+  border: 1px solid rgba(59, 130, 246, 0.16);
+}
+
+.promo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.promo-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.promo-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.promo-form-group span {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.promo-form-group input,
+.promo-form-group textarea,
+.promo-form-group select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.promo-form-group select {
+  appearance: none;
+}
+
+.promo-form-group textarea {
+  resize: vertical;
+}
+
+.promo-form-full {
+  grid-column: span 2;
+}
+
+.promo-form-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.success-text {
+  margin-top: 12px;
+  color: var(--success);
+  font-weight: 600;
+}
+
+.package-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.package-header h3 {
+  margin: 0;
+}
+
+.package-duration {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.package-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.package-desc {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.promo-hero {
+  padding: 60px 0;
+  background: linear-gradient(135deg, rgba(101, 72, 255, 0.1), rgba(255, 255, 255, 1));
+}
+
+.promo-hero-body {
+  display: grid;
+  align-items: center;
+  min-height: 220px;
+}
+
+.promo-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
 .cta-card {
-  display: grid; grid-template-columns: 1fr 1fr;
-  border-radius: var(--radius-lg); overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   border: 1px solid var(--border);
   background: var(--white);
 }
 .cta-left { padding: 40px; }
-.cta-stars { display: flex; gap: 2px; color: var(--warning); margin-bottom: 12px; }
 .cta-desc { color: var(--text-muted); margin: 12px 0 24px; font-size: 15px; }
 .cta-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
 .cta-right {
@@ -21,6 +197,26 @@
 .cta-stats > div { display: flex; flex-direction: column; }
 .cta-stats strong { font-size: 32px; font-weight: 800; }
 .cta-stats span { opacity: 0.9; font-size: 14px; }
+
+.error-text {
+  color: var(--danger);
+  margin-top: 16px;
+}
+
+@media (max-width: 1024px) {
+  .promo-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
 @media (max-width: 800px) {
   .cta-card { grid-template-columns: 1fr; }
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+  .promo-header,
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

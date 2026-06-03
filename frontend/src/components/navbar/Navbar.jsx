@@ -25,9 +25,8 @@ export default function Navbar() {
           <button className="icon-btn hide-sm" aria-label="Wishlist"></button>
           <button className="icon-btn hide-sm" aria-label="Chat"></button>
           <button className="icon-btn hide-sm" aria-label="Notifikasi"></button>
-          <Link to="/admin" className="btn btn-ghost hide-sm">Admin</Link>
           <button className="btn btn-ghost hide-sm"> Masuk</button>
-          <button className="btn btn-primary"> Pasang Iklan</button>
+          <Link to="/promosi" className="btn btn-primary">Pasang Iklan</Link>
           <button className="icon-btn show-sm" onClick={() => setOpen(!open)} aria-label="Menu">
             {/* {open ? <X size={22} /> : <Menu size={22} />} */}
           </button>

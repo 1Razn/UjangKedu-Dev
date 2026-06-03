@@ -2,6 +2,17 @@
   display: flex; justify-content: space-between; align-items: flex-end;
   margin-bottom: 28px; gap: 16px;
 }
+.featured-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding: 14px 16px;
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 18px;
+}
 .featured-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
 }

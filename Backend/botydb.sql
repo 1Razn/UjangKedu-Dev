@@ -32,6 +32,14 @@ CREATE TABLE `kategori_properti` (
   `nama_kategori` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+LOCK TABLES `kategori_properti` WRITE;
+INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
+  (1, 'Rumah'),
+  (2, 'Apartemen'),
+  (3, 'Tanah'),
+  (4, 'Komersial');
+UNLOCK TABLES;
+
 --
 -- Dumping data for table `kategori_properti`
 --
@@ -81,6 +89,13 @@ CREATE TABLE `paket_iklan` (
   `harga` char(10) NOT NULL,
   `deskripsi` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+LOCK TABLES `paket_iklan` WRITE;
+INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
+  (1, 'Paket Silver', '7 hari', 'Rp 150.000', 'Tampilan standar, cocok untuk listing baru.'),
+  (2, 'Paket Gold', '14 hari', 'Rp 275.000', 'Lebih banyak eksposur dan prioritas pencarian.'),
+  (3, 'Paket Platinum', '30 hari', 'Rp 500.000', 'Iklan premium dengan sorotan istimewa dan dukungan cepat.');
+UNLOCK TABLES;
 
 --
 -- Dumping data for table `paket_iklan`
