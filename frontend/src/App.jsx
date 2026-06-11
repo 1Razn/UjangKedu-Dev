@@ -2,13 +2,16 @@ import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "./components/navbar/Navbar.jsx";
 import Hero from "./components/hero/Hero.jsx";
-import Categories from "./components/kategori/Kategori.jsx";
-import Featured from "./components/fitur/Main_content.jsx";
-import Features from "./components/fitur/List_fitur.jsx";
-import CTA from "./components/Promosi/Promosi.jsx";
+import Kategori from "./components/kategori/Kategori.jsx";
+import MainContent from "./components/fitur/Main_content.jsx";
+import ListFitur from "./components/fitur/List_fitur.jsx";
+import Promosi from "./components/promosi/Promosi.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import AdminPage from "./components/admin/AdminPage.jsx";
-import PromosiPage from "./components/Promosi/PromosiPage.jsx";
+import PropertyDetail from "./components/property/PropertyDetail.jsx";
+import SearchResults from "./components/search/SearchResults.jsx";
+import PromosiPage from "./components/property/FormProperty.jsx";
+import Login from "./components/login/Login.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -18,14 +21,24 @@ function Home() {
       <Navbar />
       <main>
         <Hero />
-        <Categories
+        <Kategori
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
-        <Featured selectedCategory={selectedCategory} onClearCategory={() => setSelectedCategory("Semua")} />
-        <Features />
-        <CTA />
+        <MainContent selectedCategory={selectedCategory} onClearCategory={() => setSelectedCategory("Semua")} />
+        <ListFitur />
+        <Promosi />
       </main>
+      <Footer />
+    </div>
+  );
+}
+
+function WithChrome({ children }) {
+  return (
+    <div className="app">
+      <Navbar />
+      <main>{children}</main>
       <Footer />
     </div>
   );
@@ -37,6 +50,9 @@ export default function App() {
       <Route path="/" element={<Home />} />
       <Route path="/promosi" element={<PromosiPage />} />
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
+      <Route path="/search" element={<WithChrome><SearchResults /></WithChrome>} />
     </Routes>
   );
 }

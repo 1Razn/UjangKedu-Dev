@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import http from "../../utils/http";
-import PackageCard from "./PackageCard.jsx";
-import { DEFAULT_PACKAGES } from "./promoData.js";
-import "./Promosi.css";
+import http from "../../utils/http.js";
+import PackageCard from "../promosi/PackageCard.jsx";
+import { DEFAULT_PACKAGES } from "../promosi/promoData.js";
+import "../promosi/Promosi.css";
 
 export default function PromosiPage() {
   const [packages, setPackages] = useState(DEFAULT_PACKAGES);

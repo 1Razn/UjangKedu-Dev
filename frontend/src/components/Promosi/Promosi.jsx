@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import http from "../../utils/http";
+import http from "../../utils/http.js";
 import PackageCard from "./PackageCard.jsx";
 import { DEFAULT_PACKAGES } from "./promoData.js";
 import "./Promosi.css";
@@ -53,7 +53,6 @@ export default function CTA() {
           </div>
           <div className="cta-right">
             <div className="cta-stats">
-              <div><strong>10K+</strong><span>Agen Aktif</span></div>
               <div><strong>50K+</strong><span>Listing</span></div>
               <div><strong>200+</strong><span>Kota</span></div>
               <div><strong>4.8★</strong><span>Rating Pengguna</span></div>

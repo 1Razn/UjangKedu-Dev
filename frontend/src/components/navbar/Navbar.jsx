@@ -4,7 +4,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const links = ["Jual", "Sewa", "Booking Tanah", "Agen"];
+  const links = ["Jual", "Sewa", "Booking Tanah"];
 
   return (
     <header className="navbar">
@@ -25,10 +25,9 @@ export default function Navbar() {
           <button className="icon-btn hide-sm" aria-label="Wishlist"></button>
           <button className="icon-btn hide-sm" aria-label="Chat"></button>
           <button className="icon-btn hide-sm" aria-label="Notifikasi"></button>
-          <button className="btn btn-ghost hide-sm"> Masuk</button>
+          <Link to="/login" className="btn btn-ghost hide-sm"> Masuk</Link>
           <Link to="/promosi" className="btn btn-primary">Pasang Iklan</Link>
           <button className="icon-btn show-sm" onClick={() => setOpen(!open)} aria-label="Menu">
-            {/* {open ? <X size={22} /> : <Menu size={22} />} */}
           </button>
         </div>
       </div>
