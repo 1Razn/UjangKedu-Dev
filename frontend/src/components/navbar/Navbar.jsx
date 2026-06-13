@@ -4,7 +4,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const links = ["Jual", "Sewa", "Booking Tanah"];
+  const links = ["Jual", "Sewa", "Booking Tanah",];
 
   return (
     <header className="navbar">
@@ -18,6 +18,7 @@ export default function Navbar() {
           {links.map((l) => (
             <a key={l} href="#" className="navbar-link">{l}</a>
           ))}
+          <Link to="/laporan" className="navbar-link">Laporan</Link>
           <Link to="/admin" className="navbar-link">Admin</Link>
         </nav>
 

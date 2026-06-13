@@ -12,6 +12,7 @@ import PropertyDetail from "./components/property/PropertyDetail.jsx";
 import SearchResults from "./components/search/SearchResults.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
 import Login from "./components/login/Login.jsx";
+import Laporan from "./components/laporan/Laporan.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -53,6 +54,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
       <Route path="/search" element={<WithChrome><SearchResults /></WithChrome>} />
+      <Route path="/laporan" element={<WithChrome><Laporan /></WithChrome>} />
     </Routes>
   );
 }
