@@ -8,6 +8,7 @@ import ListFitur from "./components/fitur/List_fitur.jsx";
 import Promosi from "./components/promosi/Promosi.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import AdminPage from "./components/admin/AdminPage.jsx";
+import UserForm from "./components/admin/UserForm.jsx"; // ✅ Tambahkan import ini
 import PropertyDetail from "./components/property/PropertyDetail.jsx";
 import SearchResults from "./components/search/SearchResults.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
@@ -16,7 +17,6 @@ import Laporan from "./components/laporan/Laporan.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
-
   return (
     <div className="app">
       <Navbar />
@@ -50,7 +50,12 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/promosi" element={<PromosiPage />} />
+      
+      {/* ✅ Route Admin */}
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/admin/user/edit/:id" element={<UserForm />} /> {/* ✅ Tambahkan ini */}
+      <Route path="/admin/user/add" element={<UserForm />} /> {/* ✅ Tambahkan ini */}
+      
       <Route path="/login" element={<Login />} />
       <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
       <Route path="/search" element={<WithChrome><SearchResults /></WithChrome>} />

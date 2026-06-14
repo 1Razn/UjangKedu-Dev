@@ -2,15 +2,13 @@ import "./AdminStats.css";
 
 export default function AdminStats({ users, reports }) {
   const total = users.length;
-  const active = users.filter((u) => u.status === "active").length;
-  const blocked = users.filter((u) => u.status === "blocked").length;
-  const pending = reports.filter((r) => r.status === "pending").length;
+  const adminCount = users.filter((u) => u.role === "Admin").length;
+  const userCount = users.filter((u) => u.role === "User").length;
 
   const cards = [
-    { label: "Total User", value: total, icon: '', color: "primary" },
-    { label: "User Aktif", value: active, icon: '', color: "success" },
-    { label: "User Diblokir", value: blocked, icon: '', color: "danger" },
-    { label: "Laporan Menunggu", value: pending, icon: '', color: "warning" },
+    { label: "Total User", value: total, icon: "👥", color: "primary" },
+    { label: "Admin", value: adminCount, icon: "🛡️", color: "warning" },
+    { label: "User Biasa", value: userCount, icon: "👤", color: "success" },
   ];
 
   return (

@@ -5,6 +5,7 @@
   padding: 24px;
   box-shadow: var(--shadow-sm);
 }
+
 .panel-head {
   display: flex;
   justify-content: space-between;
@@ -13,8 +14,17 @@
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
-.panel-title { font-size: 20px; font-weight: 700; }
-.panel-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+.panel-title { 
+  font-size: 20px; 
+  font-weight: 700; 
+}
+
+.panel-sub { 
+  font-size: 13px; 
+  color: var(--text-muted); 
+  margin-top: 4px; 
+}
 
 .search-box {
   display: flex;
@@ -26,10 +36,26 @@
   color: var(--text-muted);
   background: var(--bg-soft);
 }
-.search-box input { border: none; background: none; outline: none; font-size: 14px; color: var(--text); width: 200px; }
 
-.table-wrap { overflow-x: auto; }
-.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.search-box input { 
+  border: none; 
+  background: none; 
+  outline: none; 
+  font-size: 14px; 
+  color: var(--text); 
+  width: 200px; 
+}
+
+.table-wrap { 
+  overflow-x: auto; 
+}
+
+.admin-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 14px; 
+}
+
 .admin-table th {
   text-align: left;
   padding: 12px 14px;
@@ -38,9 +64,22 @@
   font-weight: 600;
   white-space: nowrap;
 }
-.admin-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-.cell-name { font-weight: 600; }
-.empty { text-align: center; color: var(--text-muted); padding: 24px; }
+
+.admin-table td { 
+  padding: 12px 14px; 
+  border-bottom: 1px solid var(--border); 
+  white-space: nowrap; 
+}
+
+.cell-name { 
+  font-weight: 600; 
+}
+
+.empty { 
+  text-align: center; 
+  color: var(--text-muted); 
+  padding: 24px; 
+}
 
 .badge {
   display: inline-block;
@@ -49,12 +88,136 @@
   font-size: 12px;
   font-weight: 600;
 }
-.badge-active { background: #dcfce7; color: #15803d; }
-.badge-blocked { background: #fee2e2; color: #b91c1c; }
-.badge-pending { background: #fef3c7; color: #b45309; }
-.badge-proven { background: #fee2e2; color: #b91c1c; }
-.badge-rejected { background: #e2e8f0; color: #475569; }
 
+.badge-primary { 
+  background: #dbeafe; 
+  color: #1e40af; 
+}
+
+.badge-warning { 
+  background: #fef3c7; 
+  color: #b45309; 
+}
+
+.badge-success { 
+  background: #dcfce7; 
+  color: #15803d; 
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Base Button Styles */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-action:active {
+  transform: scale(0.95);
+}
+
+/* ✅ Success Button (Green - untuk Admin/Approve) */
+.btn-success {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.btn-success:hover {
+  background: #86efac;
+  border-color: #22c55e;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-success:active {
+  background: #16a34a;
+  color: white;
+}
+
+/* Warning Button (Edit) */
+.btn-warning {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+
+.btn-warning:hover {
+  background: #fde68a;
+  border-color: #fbbf24;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+
+.btn-warning:active {
+  background: #f59e0b;
+  color: white;
+}
+
+/* Danger Button (Delete/Hapus) */
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.btn-danger:hover {
+  background: #fecaca;
+  border-color: #f87171;
+  box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3);
+}
+
+.btn-danger:active {
+  background: #dc2626;
+  color: white;
+}
+
+/* Primary Button (Default) */
+.btn-primary {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.btn-primary:hover {
+  background: #bfdbfe;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:active {
+  background: #2563eb;
+  color: white;
+}
+
+/* Small Button Variant */
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* Icon Button */
+.btn-icon {
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Row Action Buttons (Legacy) */
 .row-btn {
   display: inline-flex;
   align-items: center;
@@ -64,8 +227,46 @@
   font-size: 13px;
   font-weight: 600;
   transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
 }
-.row-ban { background: #fee2e2; color: #b91c1c; }
-.row-ban:hover { background: #fecaca; }
-.row-restore { background: var(--primary-soft); color: var(--primary); }
-.row-restore:hover { background: var(--primary-light); }
+
+.row-ban { 
+  background: #fee2e2; 
+  color: #b91c1c; 
+}
+
+.row-ban:hover { 
+  background: #fecaca; 
+}
+
+.row-restore { 
+  background: var(--primary-soft); 
+  color: var(--primary); 
+}
+
+.row-restore:hover { 
+  background: var(--primary-light); 
+}
+
+/* ✅ Row Success Button */
+.row-success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.row-success:hover {
+  background: #86efac;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .btn-action {
+    width: 100%;
+  }
+}

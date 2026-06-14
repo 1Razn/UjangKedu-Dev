@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { statusLabel } from "./adminData.js";
 import "./UserTable.css";
 
-export default function UserTable({ users, onToggleBan }) {
+export default function UserTable({ users, onEdit, onDelete, onAdd }) {
   const [query, setQuery] = useState("");
 
   const filtered = users.filter(
     (u) =>
-      u.name.toLowerCase().includes(query.toLowerCase()) ||
+      u.nama.toLowerCase().includes(query.toLowerCase()) ||
       u.email.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -16,16 +15,25 @@ export default function UserTable({ users, onToggleBan }) {
       <div className="panel-head">
         <div>
           <h2 className="panel-title">Data User</h2>
-          <p className="panel-sub">Kelola seluruh user agar terdata lengkap untuk mencegah penipuan.</p>
+          <p className="panel-sub">
+            Kelola seluruh user agar terdata lengkap untuk mencegah penipuan.
+          </p>
         </div>
-        <div className="search-box">
-          
-          <input
-            type="text"
-            placeholder="Cari nama atau email..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <button
+            className="btn-action btn-success btn-sm"
+            onClick={onAdd}
+          >
+            + Tambah User
+          </button>
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Cari nama atau email..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
@@ -36,39 +44,44 @@ export default function UserTable({ users, onToggleBan }) {
               <th>Nama</th>
               <th>Email</th>
               <th>Telepon</th>
-              <th>Bergabung</th>
-              <th>Iklan</th>
-              <th>Status</th>
+              <th>Role</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((u) => (
               <tr key={u.id}>
-                <td className="cell-name">{u.name}</td>
+                <td className="cell-name">{u.nama}</td>
                 <td>{u.email}</td>
-                <td>{u.phone}</td>
-                <td>{u.joinedAt}</td>
-                <td>{u.listings}</td>
+                <td>{u.no_hp}</td>
                 <td>
-                  <span className={`badge badge-${u.status}`}>{statusLabel[u.status]}</span>
+                  <span className={`badge badge-${u.role === 'Admin' ? 'success' : 'primary'}`}>
+                    {u.role}
+                  </span>
                 </td>
                 <td>
-                  {u.status === "active" ? (
-                    <button className="row-btn row-ban" onClick={() => onToggleBan(u.id)}>
-                      Ban
+                  <div className="action-buttons">
+                    <button
+                      className="btn-action btn-warning btn-sm"
+                      onClick={() => onEdit(u.id)}
+                    >
+                      Edit
                     </button>
-                  ) : (
-                    <button className="row-btn row-restore" onClick={() => onToggleBan(u.id)}>
-                      Aktifkan
+                    <button
+                      className="btn-action btn-danger btn-sm"
+                      onClick={() => onDelete(u.id)}
+                    >
+                      Hapus
                     </button>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="empty">Tidak ada user yang cocok.</td>
+                <td colSpan={5} className="empty">
+                  Tidak ada user yang cocok.
+                </td>
               </tr>
             )}
           </tbody>

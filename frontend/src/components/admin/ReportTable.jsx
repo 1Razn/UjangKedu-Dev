@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { statusLabel } from "./adminData.js";
 import "./ReportTable.css";
 
 export default function ReportTable({ reports, onResolve }) {
@@ -27,7 +26,7 @@ export default function ReportTable({ reports, onResolve }) {
                   </span>
                 </div>
                 <div className="report-right">
-                  <span className={`badge badge-${r.status}`}>{statusLabel[r.status]}</span>
+                  <span className={`badge badge-${r.status}`}>{r.status}</span>
                   {}
                 </div>
               </div>
@@ -48,7 +47,7 @@ export default function ReportTable({ reports, onResolve }) {
                     </div>
                   ) : (
                     <p className="report-resolved">
-                      Laporan sudah diputuskan: <strong>{statusLabel[r.status]}</strong>
+                      Laporan sudah diputuskan: <strong>{r.status}</strong>
                     </p>
                   )}
                 </div>

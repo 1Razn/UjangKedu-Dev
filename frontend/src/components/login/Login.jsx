@@ -1,15 +1,42 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../api/authApi.js";
 import "./Login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Login sebagai: ${form.username || "—"}`);
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await login(form.email, form.password);
+      
+      if (response.success) {
+        // ✅ Simpan token & data user ke localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        
+        // ✅ Redirect berdasarkan role
+        if (response.data.user.role === "Admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || "Email atau password salah";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -17,32 +44,49 @@ export default function Login() {
       <div className="login-card">
         <div className="login-left">
           <Link to="/" className="login-brand">
-            <span className="brand-light">Booking Tanah</span> <span className="brand-amp">&amp;</span>
+            <span className="brand-light">Booking Tanah</span>
+            <span className="brand-amp">&</span>
             <br />
             <span className="brand-dark">Property</span>
           </Link>
 
           <p className="login-subtitle">
-            Don't have an account? Create your account, it takes less than a minute.
+            Masuk ke akun BOTY Anda untuk melanjutkan.
           </p>
+
+          {/* ✅ Tampilkan error jika ada */}
+          {error && (
+            <div style={{
+              backgroundColor: "#fee2e2",
+              color: "#b91c1c",
+              padding: "12px",
+              borderRadius: "8px",
+              marginBottom: "16px",
+              fontSize: "14px",
+              border: "1px solid #fca5a5"
+            }}>
+              ⚠️ {error}
+            </div>
+          )}
 
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="login-field">
               <input
-                type="text"
-                placeholder="Username"
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
               />
             </div>
 
             <div className="login-field">
-              {/* <Lock size={18} className="login-field-icon" /> */}
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
+                required
               />
               <button
                 type="button"
@@ -50,7 +94,7 @@ export default function Login() {
                 onClick={() => setShowPass(!showPass)}
                 aria-label="Toggle password"
               >
-                {showPass ? '🙈' : '👁️'}
+                {showPass ? "🙈" : "👁️"}
               </button>
             </div>
 
@@ -66,21 +110,33 @@ export default function Login() {
               <a href="#" className="login-forgot">Forgot password?</a>
             </div>
 
-            <button type="submit" className="login-submit">Login</button>
+            <button 
+              type="submit" 
+              className="login-submit"
+              disabled={loading}
+              style={{ opacity: loading ? 0.7 : 1 }}
+            >
+              {loading ? "Memproses..." : "Login"}
+            </button>
           </form>
 
-          <div className="login-with">
-            <span>Login with</span>
-            <div className="login-socials">
-              <button type="button" className="login-social" aria-label="Facebook">f</button>
-              <button type="button" className="login-social" aria-label="Google">G</button>
-              <button type="button" className="login-social" aria-label="Twitter">t</button>
-            </div>
+          {/* ✅ Info Akun Test */}
+          <div style={{
+            marginTop: "20px",
+            padding: "12px",
+            backgroundColor: "#f0f9ff",
+            borderRadius: "8px",
+            fontSize: "13px",
+            color: "#0369a1",
+            border: "1px solid #bae6fd"
+          }}>
+            <strong> Akun Test:</strong><br />
+            Admin: admin@boty.com / admin123<br />
+            User: user123@gmail.com / user123
           </div>
 
           <div className="login-footer">
-            <p>© Copyright 2019 BudgetBear - Drivester Ltd.</p>
-            <p>67 Albion Street, West Yorkshire, Leeds LS1 5AA, United Kingdom.</p>
+            <p>© Copyright 2026 BOTY</p>
           </div>
         </div>
 

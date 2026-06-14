@@ -1,10 +1,13 @@
 const db = require('../config/database');
 
 class User {
-    static getAll(callback) {
-        const sql = 'SELECT * FROM user';
-        db.query(sql, callback);
-    }
+    static getAll = (callback) => {
+        const query = "SELECT * FROM user ORDER BY id DESC";
+        db.query(query, (err, result) => {
+            if (err) return callback(err, null);
+            callback(null, result);
+        });
+    };
 
     static getById(id, callback) {
         const sql = 'SELECT * FROM user WHERE id = ?';
