@@ -37,7 +37,7 @@ export default function Login() {
             </div>
 
             <div className="login-field">
-              <Lock size={18} className="login-field-icon" />
+              {/* <Lock size={18} className="login-field-icon" /> */}
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Password"

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 02, 2026 at 04:11 PM
+-- Generation Time: Jun 14, 2026 at 02:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,17 +32,16 @@ CREATE TABLE `kategori_properti` (
   `nama_kategori` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-LOCK TABLES `kategori_properti` WRITE;
-INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
-  (1, 'Rumah'),
-  (2, 'Apartemen'),
-  (3, 'Tanah'),
-  (4, 'Komersial');
-UNLOCK TABLES;
-
 --
 -- Dumping data for table `kategori_properti`
 --
+
+INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
+(1, 'Rumah'),
+(2, 'Apartemen'),
+(3, 'Tanah'),
+(4, 'Ruko'),
+(5, 'Kost');
 
 -- --------------------------------------------------------
 
@@ -57,10 +56,6 @@ CREATE TABLE `komentar` (
   `user_id` int(11) NOT NULL,
   `komentar_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `komentar`
---
 
 -- --------------------------------------------------------
 
@@ -90,16 +85,14 @@ CREATE TABLE `paket_iklan` (
   `deskripsi` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-LOCK TABLES `paket_iklan` WRITE;
-INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
-  (1, 'Paket Silver', '7 hari', 'Rp 150.000', 'Tampilan standar, cocok untuk listing baru.'),
-  (2, 'Paket Gold', '14 hari', 'Rp 275.000', 'Lebih banyak eksposur dan prioritas pencarian.'),
-  (3, 'Paket Platinum', '30 hari', 'Rp 500.000', 'Iklan premium dengan sorotan istimewa dan dukungan cepat.');
-UNLOCK TABLES;
-
 --
 -- Dumping data for table `paket_iklan`
 --
+
+INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
+(1, 'Paket Bronze', '7 Hari', '50000', 'Paket hemat untuk pemula'),
+(2, 'Paket Silver', '30 Hari', '150000', 'Paket populer untuk agen'),
+(3, 'Paket Gold', '90 Hari', '400000', 'Paket premium dengan fitur highlight');
 
 -- --------------------------------------------------------
 
@@ -109,7 +102,7 @@ UNLOCK TABLES;
 
 CREATE TABLE `properti` (
   `id` int(11) NOT NULL,
-  `judul` varchar(20) NOT NULL,
+  `judul` varchar(100) NOT NULL,
   `deskripsi` text NOT NULL,
   `alamat` text NOT NULL,
   `luas_properti` char(10) NOT NULL,
@@ -125,6 +118,14 @@ CREATE TABLE `properti` (
 --
 -- Dumping data for table `properti`
 --
+
+INSERT INTO `properti` (`id`, `judul`, `deskripsi`, `alamat`, `luas_properti`, `harga`, `tanggal_tayang`, `tanggal_kadaluarsa`, `kategori_properti_id`, `paket_iklan_id`, `user_id`, `foto_properti`) VALUES
+(1, 'Rumah Minimalis Mod', 'Rumah minimalis 2 lantai, lokasi strategis dekat stasiun.', 'Jl. Mawar No. 123, Jaksel', '120', '850000000', '2026-01-15', '2026-02-14', 1, 2, 2, 'uploads/properti/rumah1.jpg'),
+(2, 'Rumah Mewah 3 Kamar', 'Rumah mewah 3 kamar tidur, 2 kamar mandi, garasi 2 mobil.', 'Jl. Anggrek No. 45, Dago', '200', '1500000000', '2026-01-20', '2026-04-20', 1, 3, 2, 'uploads/properti/rumah2.jpg'),
+(3, 'Apartemen Studio Jkt', 'Apartemen studio fully furnished, strategis di pusat kota.', 'Jl. Sudirman Kav. 52', '36', '650000000', '2026-01-25', '2026-04-25', 2, 3, 2, 'uploads/properti/apartemen1.jpg'),
+(4, 'Tanah Kavling Depok', 'Tanah kavling siap bangun, SHM, dekat UI dan stasiun KRL.', 'Jl. Margonda Raya', '150', '450000000', '2026-01-10', '2026-04-10', 3, 3, 2, 'uploads/properti/tanah1.jpg'),
+(5, 'Ruko 2 Lantai Bdg', 'Ruko 2 lantai, lokasi strategis dekat kampus dan mall.', 'Jl. Dago Atas No. 88', '100', '1800000000', '2026-02-01', '2026-03-03', 4, 2, 2, 'uploads/properti/ruko2.jpg'),
+(6, 'Kost Eksklusif Jaks', 'Kost eksklusif fasilitas lengkap. AC, kamar mandi dalam, wifi.', 'Jl. Fatmawati No. 45', '200', '2500000', '2026-02-08', '2026-03-10', 5, 2, 2, 'uploads/properti/kost1.jpg');
 
 -- --------------------------------------------------------
 
@@ -146,6 +147,10 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
+INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `foto_profil`, `password`, `role`) VALUES
+(1, 'Admin', '081234567890', 'admin@boty.com', NULL, '$2b$10$yPTBQO7vMuzZqbBaOOoXNuWz/55efCmuNwbr7NbiKXR0lmDVKSay.', 'Admin'),
+(2, 'User', '081234567891', 'user@gmail.com', NULL, '$2b$10$PQlagidYO.w2lXiDLZpWJe3mfDZJZ/7UXkqNgwmADkAxAgLxzC5mu', 'User');
+
 -- --------------------------------------------------------
 
 --
@@ -157,10 +162,6 @@ CREATE TABLE `wishlist` (
   `user_id` int(11) NOT NULL,
   `properti_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `wishlist`
---
 
 --
 -- Indexes for dumped tables
@@ -216,7 +217,6 @@ ALTER TABLE `user`
 ALTER TABLE `wishlist`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_user_properti` (`user_id`,`properti_id`),
-  ADD KEY `fk_wishlist_user1_idx` (`user_id`),
   ADD KEY `fk_wishlist_properti1_idx` (`properti_id`);
 
 --
@@ -227,13 +227,13 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `kategori_properti`
 --
 ALTER TABLE `kategori_properti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `komentar`
 --
 ALTER TABLE `komentar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `laporan`
@@ -251,19 +251,19 @@ ALTER TABLE `paket_iklan`
 -- AUTO_INCREMENT for table `properti`
 --
 ALTER TABLE `properti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

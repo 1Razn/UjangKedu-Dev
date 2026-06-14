@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PropertyCard from "../fitur/PropertyCard.jsx";
-import { PROPERTIES } from "../../data/properties.js";
+import { getPropertyByIdApi } from "../../api/propertiApi.js"; 
 import "../fitur/Main_content.jsx";
 import "./SearchResults.css";
 
@@ -13,7 +13,7 @@ export default function SearchResults() {
   const type = searchParams.get("type") || "";
   const [query, setQuery] = useState(q);
 
-  const results = PROPERTIES.filter((p) => {
+  const results = getPropertyByIdApi.filter((p) => {
     const matchType = !type || type === "Semua" || p.type === type;
     const text = `${p.title} ${p.location}`.toLowerCase();
     const matchQuery = !q || text.includes(q.toLowerCase());

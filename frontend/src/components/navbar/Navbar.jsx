@@ -23,9 +23,9 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar-actions">
-          <button className="icon-btn hide-sm" aria-label="Wishlist"></button>
+          {/* <button className="icon-btn hide-sm" aria-label="Wishlist"></button>
           <button className="icon-btn hide-sm" aria-label="Chat"></button>
-          <button className="icon-btn hide-sm" aria-label="Notifikasi"></button>
+          <button className="icon-btn hide-sm" aria-label="Notifikasi"></button> */}
           <Link to="/login" className="btn btn-ghost hide-sm"> Masuk</Link>
           <Link to="/promosi" className="btn btn-primary">Pasang Iklan</Link>
           <button className="icon-btn show-sm" onClick={() => setOpen(!open)} aria-label="Menu">

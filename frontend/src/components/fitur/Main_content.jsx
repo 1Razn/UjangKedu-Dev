@@ -1,10 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import PropertyCard from "./PropertyCard.jsx";
-import http from "../../utils/http.js"; 
+import http from "../../utils/http.js";
 import "./Main_content.css";
 
 export default function Featured({ selectedCategory, onClearCategory }) {
-  
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,24 +14,20 @@ export default function Featured({ selectedCategory, onClearCategory }) {
         setLoading(true);
         const response = await http.get("/properti");
         const rawData = response.data.data || response.data;
-
+        
         const mappedData = rawData.map(item => ({
           id: item.id,
-          title: item.nama_properti || item.nama || item.title || "Properti Tanpa Nama",
-          category: item.kategori || item.category || "Rumah", 
-          
-          price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : (item.price || "Harga tidak tersedia"),
-          
-          location: item.lokasi || item.alamat || item.location || "Lokasi belum diatur",
-          type: item.tipe || item.type || "Jual", 
-          bedrooms: item.kamar_tidur || item.bedrooms || "-",
-          bathrooms: item.kamar_mandi || item.bathrooms || "-",
-          area: item.luas_tanah || item.luas || item.area || 0,
-        
-          image: item.foto_properti || item.foto || item.image || "https://placehold.co/600x400?text=Gambar+Properti",
-          
+          title: item.judul || "Properti Tanpa Nama",
+          category: item.category || "Rumah", 
+          price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : "Harga tidak tersedia",
+          location: item.alamat || "Lokasi belum diatur",
+          type: item.tipe || "Jual",
+          bedrooms: item.kamar_tidur || "-",
+          bathrooms: item.kamar_mandi || "-",
+          area: item.luas_properti || 0,
+          image: item.foto_properti || "https://placehold.co/600x400?text=Gambar+Properti",
           featured: item.featured == 1 || item.featured === true,
-          agent: item.nama_agen || item.agent || "Agen BOTY"
+          agent: item.agent_name || "Agen BOTY"
         }));
 
         setProperties(mappedData);
@@ -52,7 +47,7 @@ export default function Featured({ selectedCategory, onClearCategory }) {
       return properties;
     }
     return properties.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory, properties]); 
+  }, [selectedCategory, properties]);
 
   return (
     <section className="section featured">
@@ -67,9 +62,7 @@ export default function Featured({ selectedCategory, onClearCategory }) {
         
         {selectedCategory && selectedCategory !== "Semua" && (
           <div className="featured-filter">
-            <p>
-              Menampilkan kategori: <strong>{selectedCategory}</strong>
-            </p>
+            <p>Menampilkan kategori: <strong>{selectedCategory}</strong></p>
             <button className="btn btn-outline btn-sm" onClick={onClearCategory}>
               Hapus Filter
             </button>
@@ -77,7 +70,7 @@ export default function Featured({ selectedCategory, onClearCategory }) {
         )}
 
         {loading ? (
-          <p style={{ textAlign: "center", padding: "20px" }}>Memuat properti unggulan... ⏳</p>
+          <p style={{ textAlign: "center", padding: "20px" }}>Memuat properti unggulan... </p>
         ) : error ? (
           <p style={{ textAlign: "center", padding: "20px", color: "red" }}>{error}</p>
         ) : filteredProperties.length === 0 ? (
@@ -87,7 +80,6 @@ export default function Featured({ selectedCategory, onClearCategory }) {
             {filteredProperties.map((p) => <PropertyCard key={p.id} p={p} />)}
           </div>
         )}
-        
       </div>
     </section>
   );
