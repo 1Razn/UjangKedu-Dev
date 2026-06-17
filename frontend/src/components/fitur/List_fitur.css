@@ -1,21 +1,96 @@
-.features-section { background: var(--bg-soft); }
-.features-head { text-align: center; max-width: 620px; margin: 0 auto 36px; }
-.features-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+/* src/components/fitur/List_fitur.css */
+
+.list-fitur-section {
+  padding: 60px 16px;
+  background-color: var(--bg-soft, #f8fafc);
+  font-family: inherit;
 }
-.feature-card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 24px;
+
+.list-fitur-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.list-fitur-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.list-fitur-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text, #0f172a);
+  margin-bottom: 12px;
+}
+
+.list-fitur-header p {
+  font-size: 16px;
+  color: var(--text-muted, #64748b);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* GRID LAYOUT - 3 KOLOM SEJAJAR */
+.list-fitur-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* DESAIN KONTEN KARTU FITUR */
+.fitur-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-lg, 12px);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.feature-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.feature-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 46px; height: 46px;
-  background: var(--primary-soft); color: var(--primary);
-  border-radius: 12px; margin-bottom: 14px;
+
+.fitur-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
-.feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-.feature-card p { color: var(--text-muted); font-size: 14px; }
-@media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* BUNGKUS IKON SEPERTI DI GAMBAR */
+.fitur-icon-box {
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary-light, #e0f2fe);
+  color: var(--primary, #2563eb);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fitur-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+  margin: 0;
+}
+
+.fitur-card p {
+  font-size: 14px;
+  color: var(--text-muted, #64748b);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* RESPONSIVE UNTUK TABLET DAN HP */
+@media (max-width: 1024px) {
+  .list-fitur-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .list-fitur-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}

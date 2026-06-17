@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Hero.css";
+import { useNavigate } from "react-router-dom";
 
 const TABS = [
   { id: "jual", label: "Jual" },
@@ -10,12 +11,14 @@ const TABS = [
 const POPULAR = ["Rumah BSD", "Apartemen Jakarta", "Tanah Bogor", "Villa Bandung"];
 
 export default function Hero() {
+  const navigate = useNavigate(); // ✅ Tambahkan pemicu navigasi di sini
   const [tab, setTab] = useState("jual");
   const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
-    alert(`Cari (${tab}): ${query || "—"}`);
+    // ✅ Jalankan perpindahan halaman ke rute pencarian custom kita
+    navigate("/search-custom"); 
   };
 
   return (

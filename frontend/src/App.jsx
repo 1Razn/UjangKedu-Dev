@@ -14,6 +14,7 @@ import SearchResults from "./components/search/SearchResults.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
 import Login from "./components/login/Login.jsx";
 import Laporan from "./components/laporan/Laporan.jsx";
+import PropertySearch from "./components/property/PropertySearch.jsx"; // ✅ Import halaman pencarian buatanmu
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -60,6 +61,9 @@ export default function App() {
       <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
       <Route path="/search" element={<WithChrome><SearchResults /></WithChrome>} />
       <Route path="/laporan" element={<WithChrome><Laporan /></WithChrome>} />
+      
+      {/* ✅ Rute halaman khusus pencarian filter huruf awal milikmu */}
+      <Route path="/search-custom" element={<WithChrome><PropertySearch /></WithChrome>} />
     </Routes>
   );
 }
