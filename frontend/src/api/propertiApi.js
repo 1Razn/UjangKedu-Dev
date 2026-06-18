@@ -6,13 +6,21 @@ const mapPropertyData = (item) => ({
   price: item.harga || item.price,
   location: item.alamat || item.location || "Lokasi belum diatur",
   type: item.tipe || item.type || "Jual",
-  category: item.category || item.nama_kategori || "Rumah", // ✅ Sekarang akan dapat dari backend
+  category: item.category || item.nama_kategori || "Rumah", 
   bedrooms: item.kamar_tidur || item.bedrooms || "-",
   bathrooms: item.kamar_mandi || item.bathrooms || "-",
   area: item.luas_properti || item.area || 0,
+
+  luas_tanah: item.luas_tanah || item.luas_properti || "-",
+  luas_bangunan: item.luas_bangunan || "-",
+  jumlah_lantai: item.jumlah_lantai || item.lantai || "-",
+  daya_listrik: item.daya_listrik || item.listrik || "-",
+  garasi: item.garasi || item.carport || "-",
+  alamat_lengkap: item.alamat_lengkap || item.alamat || "-",
+
   image: item.foto_properti || item.image || "https://placehold.co/600x400?text=Gambar+Properti",
   featured: item.featured === 1 || item.featured === true,
-  agent: item.agent_name || item.nama_agen || item.agent || "Agen BOTY", // ✅ Ambil dari JOIN user
+  agent: item.agent_name || item.nama_agen || item.agent || "Agen BOTY", 
   year: item.tahun_dibangun || item.year,
   certificate: item.sertifikat || item.certificate,
   description: item.deskripsi || item.description,

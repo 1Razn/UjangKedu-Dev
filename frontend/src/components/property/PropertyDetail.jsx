@@ -53,7 +53,7 @@ export default function PropertyDetail() {
     );
   }
 
-  // Pastikan gallery ada
+ 
   const gallery = property.gallery && property.gallery.length ? property.gallery : [property.image];
 
   return (
@@ -97,45 +97,65 @@ export default function PropertyDetail() {
 
           {/* Spesifikasi */}
           <div className="detail-specs">
-            {property.bedrooms !== undefined && (
-              <div className="detail-spec">
-                <div>
-                  <strong>{property.bedrooms}</strong>
-                  <span>Kamar Tidur</span>
-                </div>
-              </div>
-            )}
-            {property.bathrooms !== undefined && (
-              <div className="detail-spec">
-                <div>
-                  <strong>{property.bathrooms}</strong>
-                  <span>Kamar Mandi</span>
-                </div>
-              </div>
-            )}
             <div className="detail-spec">
               <div>
                 <strong>{property.area} m²</strong>
-                <span>Luas</span>
+                <span>Luas Properti</span>
               </div>
             </div>
-            {property.certificate && (
+            {property.tanggal_tayang && (
               <div className="detail-spec">
                 <div>
-                  <strong>{property.certificate}</strong>
-                  <span>Sertifikat</span>
-                </div>
-              </div>
-            )}
-            {property.year && (
-              <div className="detail-spec">
-                <div>
-                  <strong>{property.year}</strong>
-                  <span>Tahun</span>
+                  <strong>{property.tanggal_tayang.substring(0, 10)}</strong>
+                  <span>Tanggal Tayang</span>
                 </div>
               </div>
             )}
           </div>
+          {property.location && (
+            <div className="detail-block">
+              <h2 className="detail-h2">Lokasi & Alamat</h2>
+              <p className="detail-desc">{property.location}</p>
+            </div>
+          )}
+          {property.description && (
+            <div className="detail-block">
+              <h2 className="detail-h2">Deskripsi</h2>
+              <p className="detail-desc">{property.description}</p>
+            </div>
+          )}
+          <div className="detail-block">
+            <h2 className="detail-h2">Detail Properti</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "15px", color: "#475569" }}>
+              
+              {property.luas_tanah && (
+                <div><strong>Luas Tanah:</strong> {property.luas_tanah} m²</div>
+              )}
+              {property.luas_bangunan && (
+                <div><strong>Luas Bangunan:</strong> {property.luas_bangunan} m²</div>
+              )}
+              {property.jumlah_lantai && (
+                <div><strong>Jumlah Lantai:</strong> {property.jumlah_lantai} Lantai</div>
+              )}
+              {property.daya_listrik && (
+                <div><strong>Daya Listrik:</strong> {property.daya_listrik} Watt</div>
+              )}
+              {property.garasi && (
+                <div><strong>Garasi / Carport:</strong> {property.garasi} Mobil</div>
+              )}
+              {property.certificate && (
+                <div><strong>Sertifikat:</strong> {property.certificate}</div>
+              )}
+            </div>
+          </div>
+
+          {/* Blok Alamat Lengkap */}
+          {property.alamat_lengkap && (
+            <div className="detail-block">
+              <h2 className="detail-h2">Lokasi & Alamat Lengkap</h2>
+              <p className="detail-desc">{property.alamat_lengkap}</p>
+            </div>
+          )}
 
           {/* Deskripsi */}
           {property.description && (
