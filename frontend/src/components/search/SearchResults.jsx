@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PropertyCard from "../fitur/PropertyCard.jsx";
-import { getPropertyByIdApi } from "../../api/propertiApi.js"; 
+import { getProperties } from "../../api/propertiApi.js"; 
 import "../fitur/Main_content.jsx";
 import "./SearchResults.css";
 
@@ -12,8 +12,28 @@ export default function SearchResults() {
   const q = searchParams.get("q") || "";
   const type = searchParams.get("type") || "";
   const [query, setQuery] = useState(q);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const results = getPropertyByIdApi.filter((p) => {
+  useEffect(() => {
+    async function loadProperties() {
+      try {
+        setLoading(true);
+        const data = await getProperties();
+        setProperties(data);
+      } catch (err) {
+        console.error("Gagal memuat properti:", err);
+        setError("Data properti gagal dimuat");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProperties();
+  }, []);
+
+  const results = properties.filter((p) => {
     const matchType = !type || type === "Semua" || p.type === type;
     const text = `${p.title} ${p.location}`.toLowerCase();
     const matchQuery = !q || text.includes(q.toLowerCase());
@@ -33,6 +53,27 @@ export default function SearchResults() {
     e.preventDefault();
     updateParams({ q: query });
   };
+
+  if (loading) {
+    return (
+      <div className="search-page">
+        <div className="container" style={{ textAlign: "center", padding: "40px" }}>
+          <p>Memuat properti... ⏳</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="search-page">
+        <div className="container" style={{ textAlign: "center", padding: "40px" }}>
+          <p>{error}</p>
+          <Link to="/" className="btn btn-primary">Kembali ke Beranda</Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="search-page">
