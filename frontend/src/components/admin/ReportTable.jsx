@@ -4,7 +4,7 @@ import "./ReportTable.css";
 export default function ReportTable({ reports, onRejectReport, onBlockProperty }) {
   const [openId, setOpenId] = useState(null);
 
-  // Fallback agar tidak error map jika reports belum termuat sempurna
+  
   const safeReports = Array.isArray(reports) ? reports : [];
 
   return (
@@ -47,8 +47,7 @@ export default function ReportTable({ reports, onRejectReport, onBlockProperty }
                     {r.status === "pending" ? (
                       <div className="report-actions" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '15px' }}>
                         
-                        {/* TOMBOL BLOKIR PENIPU (MERAH) */}
-                        <button 
+                                                <button 
                           style={{ 
                             backgroundColor: '#dc3545', 
                             color: 'white', 
@@ -67,7 +66,6 @@ export default function ReportTable({ reports, onRejectReport, onBlockProperty }
                           🚨 Blokir Penipu
                         </button>
 
-                        {/* TOMBOL TOLAK LAPORAN (ABU-ABU OUTLINE) */}
                         <button 
                           style={{ 
                             backgroundColor: '#f9fafb', 

@@ -15,15 +15,12 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // State untuk form user
   const [showForm, setShowForm] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
 
-  // State untuk Custom UI (Toast & Modal)
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
   const [confirmDialog, setConfirmDialog] = useState({ show: false, message: "", onConfirm: null });
 
-  // Fungsi memanggil notifikasi toast
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "success" }), 3500);
@@ -116,7 +113,6 @@ export default function AdminPage() {
     });
   };
 
-  // FUNGSI BARU: Untuk Nolak & Hapus Laporan
   const handleRejectReport = (reportId) => {
     setConfirmDialog({
       show: true,
@@ -124,11 +120,9 @@ export default function AdminPage() {
       onConfirm: async () => {
         setConfirmDialog({ show: false, message: "", onConfirm: null }); 
         try {
-          // Manggil API delete laporan dari backend
           await http.delete(`/laporan/${reportId}`);
           showToast("Laporan berhasil ditolak dan dihapus!", "success");
           
-          // Refresh list laporan di tabel
           const responseLaporan = await http.get('/laporan');
           const dataLaporan = responseLaporan.data.data || responseLaporan.data;
           setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
@@ -251,9 +245,6 @@ export default function AdminPage() {
         {tab === "reports" && <ReportTable reports={reports} onRejectReport={handleRejectReport} onBlockProperty={handleBlockProperty} />}
       </main>
 
-      {/* --- AREA UI CUSTOM NOTIFIKASI --- */}
-
-      {/* Toast Notification */}
       {toast.show && (
         <div style={{
           position: 'fixed',
@@ -276,7 +267,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Confirmation Modal */}
       {confirmDialog.show && (
         <div style={{
           position: 'fixed',
