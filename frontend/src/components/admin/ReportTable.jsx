@@ -1,8 +1,11 @@
 import { useState } from "react";
 import "./ReportTable.css";
 
-export default function ReportTable({ reports, onResolve }) {
+export default function ReportTable({ reports, onRejectReport, onBlockProperty }) {
   const [openId, setOpenId] = useState(null);
+
+  // Fallback agar tidak error map jika reports belum termuat sempurna
+  const safeReports = Array.isArray(reports) ? reports : [];
 
   return (
     <div className="admin-panel">
@@ -14,47 +17,84 @@ export default function ReportTable({ reports, onResolve }) {
       </div>
 
       <div className="report-list">
-        {reports.map((r) => {
-          const open = openId === r.id;
-          return (
-            <div key={r.id} className="report-card">
-              <div className="report-top" onClick={() => setOpenId(open ? null : r.id)}>
-                <div className="report-main">
-                  <span className="report-property">{r.property}</span>
-                  <span className="report-meta">
-                    Terlapor: <strong>{r.reportedUser}</strong> · Pelapor: {r.reporter} · {r.date}
-                  </span>
+        {safeReports.length === 0 ? (
+          <p style={{ padding: "20px", textAlign: "center", color: "#666" }}>
+            Belum ada laporan yang masuk.
+          </p>
+        ) : (
+          safeReports.map((r) => {
+            const open = openId === r.id;
+            return (
+              <div key={r.id} className="report-card">
+                <div className="report-top" onClick={() => setOpenId(open ? null : r.id)}>
+                  <div className="report-main">
+                    <span className="report-property">{r.judul_laporan || 'Tanpa Judul'}</span>
+                    <span className="report-meta">
+                      Properti ID: <strong>{r.properti_id}</strong> · Pelapor (User ID): {r.user_id} · {r.created_at ? new Date(r.created_at).toLocaleDateString('id-ID') : '-'}
+                    </span>
+                  </div>
+                  <div className="report-right">
+                    <span className={`badge badge-${r.status}`}>{r.status}</span>
+                  </div>
                 </div>
-                <div className="report-right">
-                  <span className={`badge badge-${r.status}`}>{r.status}</span>
-                  {}
-                </div>
-              </div>
 
-              {open && (
-                <div className="report-detail">
-                  <p className="report-reason">
-                    {r.reason}
-                  </p>
-                  {r.status === "pending" ? (
-                    <div className="report-actions">
-                      <button className="btn-proven" onClick={() => onResolve(r.id, "proven")}>
-                        Tandai Penipuan & Ban User
-                      </button>
-                      <button className="btn-reject" onClick={() => onResolve(r.id, "rejected")}>
-                        Tolak Laporan
-                      </button>
-                    </div>
-                  ) : (
-                    <p className="report-resolved">
-                      Laporan sudah diputuskan: <strong>{r.status}</strong>
+                {open && (
+                  <div className="report-detail">
+                    <p className="report-reason">
+                      {r.keterangan || 'Tidak ada deskripsi/keterangan.'}
                     </p>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    
+                    {r.status === "pending" ? (
+                      <div className="report-actions" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '15px' }}>
+                        
+                        {/* TOMBOL BLOKIR PENIPU (MERAH) */}
+                        <button 
+                          style={{ 
+                            backgroundColor: '#dc3545', 
+                            color: 'white', 
+                            border: 'none', 
+                            padding: '10px 16px', 
+                            borderRadius: '6px', 
+                            cursor: 'pointer', 
+                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.2)'
+                          }} 
+                          onClick={() => onBlockProperty(r.properti_id)}
+                        >
+                          🚨 Blokir Penipu
+                        </button>
+
+                        {/* TOMBOL TOLAK LAPORAN (ABU-ABU OUTLINE) */}
+                        <button 
+                          style={{ 
+                            backgroundColor: '#f9fafb', 
+                            color: '#4b5563', 
+                            border: '1px solid #d1d5db', 
+                            padding: '10px 16px', 
+                            borderRadius: '6px', 
+                            cursor: 'pointer', 
+                            fontWeight: 'bold' 
+                          }}
+                          onClick={() => onRejectReport(r.id)}
+                        >
+                          Tolak Laporan
+                        </button>
+
+                      </div>
+                    ) : (
+                      <p className="report-resolved">
+                        Laporan sudah diputuskan: <strong style={{ textTransform: 'capitalize' }}>{r.status}</strong>
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

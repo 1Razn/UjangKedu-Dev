@@ -74,4 +74,35 @@ class LaporanController {
     }
 }
 
+const db = require('../config/database'); 
+
+// Fungsi untuk nerima form dari User (POST)
+exports.createLaporan = (req, res) => {
+  const { user_id, properti_id, judul_laporan, keterangan } = req.body;
+
+  const query = 'INSERT INTO laporan (user_id, properti_id, judul_laporan, keterangan) VALUES (?, ?, ?, ?)';
+  
+  // Karena pakai connectionPool dari temen lu, kita bisa langsung pakai db.query
+  db.query(query, [user_id, properti_id, judul_laporan, keterangan], (err, result) => {
+    if (err) {
+        console.error('Error saat insert laporan:', err);
+        return res.status(500).json({ error: 'Gagal menyimpan laporan ke database' });
+    }
+    res.status(201).json({ message: 'Laporan berhasil dikirim!' });
+  });
+};
+
+// Fungsi untuk ngirim data ke Admin Dashboard (GET)
+exports.getAllLaporan = (req, res) => {
+  const query = 'SELECT * FROM laporan ORDER BY created_at DESC';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+        console.error('Error saat get laporan:', err);
+        return res.status(500).json({ error: 'Gagal mengambil data laporan' });
+    }
+    res.status(200).json(results);
+  });
+};
+
 module.exports = new LaporanController();
