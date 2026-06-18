@@ -5,6 +5,7 @@ import UserTable from "./UserTable.jsx";
 import ReportTable from "./ReportTable.jsx";
 import UserForm from "./UserForm.jsx";
 import { getUsers } from "../../api/userApi.js";
+import http from "../../utils/http.js";
 import "./AdminPage.css";
 
 export default function AdminPage() {
@@ -14,9 +15,16 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // State untuk form
   const [showForm, setShowForm] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
+
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const [confirmDialog, setConfirmDialog] = useState({ show: false, message: "", onConfirm: null });
+
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 3500);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -24,6 +32,10 @@ export default function AdminPage() {
         setLoading(true);
         const usersData = await getUsers();
         setUsers(usersData);
+
+        const responseLaporan = await http.get('/laporan');
+        const dataLaporan = responseLaporan.data.data || responseLaporan.data;
+        setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
       } catch (err) {
         console.error("Gagal memuat data admin:", err);
         setError("Gagal memuat data admin.");
@@ -52,31 +64,74 @@ export default function AdminPage() {
   const handleFormSuccess = async () => {
     setShowForm(false);
     setEditingUserId(null);
-    // Reload data user
     try {
       const usersData = await getUsers();
       setUsers(usersData);
-      setTab("users"); // Kembali ke tab users
+      setTab("users"); 
     } catch (err) {
       console.error("Gagal reload data:", err);
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus user ini?")) {
-      return;
-    }
+  const handleDeleteUser = (userId) => {
+    setConfirmDialog({
+      show: true,
+      message: "Apakah Anda yakin ingin menghapus user ini?",
+      onConfirm: async () => {
+        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        try {
+          const { deleteUser } = await import("../../api/userApi.js");
+          await deleteUser(userId);
+          setUsers(prev => prev.filter(u => u.id !== userId));
+          showToast("User berhasil dihapus!", "success");
+        } catch (err) {
+          console.error("Gagal menghapus user:", err);
+          showToast("Gagal menghapus user: " + (err.response?.data?.message || err.message), "error");
+        }
+      }
+    });
+  };
 
-    try {
-      const { deleteUser } = await import("../../api/userApi.js");
-      await deleteUser(userId);
-      // Update state lokal
-      setUsers(prev => prev.filter(u => u.id !== userId));
-      alert("User berhasil dihapus!");
-    } catch (err) {
-      console.error("Gagal menghapus user:", err);
-      alert("Gagal menghapus user: " + (err.response?.data?.message || err.message));
-    }
+  const handleBlockProperty = (propertiId) => {
+    setConfirmDialog({
+      show: true,
+      message: "🚨 Yakin mau memblokir dan menghapus properti ini dari sistem? Tindakan ini tidak bisa dibatalkan!",
+      onConfirm: async () => {
+        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        try {
+          await http.delete(`/properti/${propertiId}`);
+          showToast("Properti berhasil diblokir dan dihapus dari sistem!", "success");
+          
+          const responseLaporan = await http.get('/laporan');
+          const dataLaporan = responseLaporan.data.data || responseLaporan.data;
+          setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
+        } catch (err) {
+          console.error("Gagal memblokir properti:", err);
+          showToast("Gagal memblokir properti. Periksa koneksi server.", "error");
+        }
+      }
+    });
+  };
+
+  const handleRejectReport = (reportId) => {
+    setConfirmDialog({
+      show: true,
+      message: "Apakah Anda yakin ingin menolak dan menghapus laporan ini?",
+      onConfirm: async () => {
+        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        try {
+          await http.delete(`/laporan/${reportId}`);
+          showToast("Laporan berhasil ditolak dan dihapus!", "success");
+          
+          const responseLaporan = await http.get('/laporan');
+          const dataLaporan = responseLaporan.data.data || responseLaporan.data;
+          setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
+        } catch (err) {
+          console.error("Gagal menolak laporan:", err);
+          showToast("Gagal menolak laporan. Periksa koneksi server.", "error");
+        }
+      }
+    });
   };
 
   const menu = [
@@ -138,11 +193,15 @@ export default function AdminPage() {
         </Link>
 
         <button onClick={() => {
-          if (confirm("Yakin ingin logout?")) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "/login";
-          }
+          setConfirmDialog({
+            show: true,
+            message: "Apakah Anda yakin ingin keluar dari halaman Admin?",
+            onConfirm: () => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              window.location.href = "/login";
+            }
+          });
         }} className="admin-logout-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -162,7 +221,7 @@ export default function AdminPage() {
         {tab === "dashboard" && (
           <>
             <AdminStats users={users} reports={reports} />
-            <ReportTable reports={reports} onResolve={() => {}} />
+            <ReportTable reports={reports} onRejectReport={handleRejectReport} onBlockProperty={handleBlockProperty} />
           </>
         )}
 
@@ -183,8 +242,86 @@ export default function AdminPage() {
           )
         )}
 
-        {tab === "reports" && <ReportTable reports={reports} onResolve={() => {}} />}
+        {tab === "reports" && <ReportTable reports={reports} onRejectReport={handleRejectReport} onBlockProperty={handleBlockProperty} />}
       </main>
+
+      {toast.show && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: toast.type === 'success' ? '#4caf50' : '#f44336',
+          color: 'white',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          zIndex: 9999,
+          fontWeight: '600',
+          animation: 'slideIn 0.3s ease-out'
+        }}>
+          <span style={{ fontSize: '20px' }}>{toast.type === 'success' ? '✅' : '❌'}</span>
+          <span>{toast.message}</span>
+        </div>
+      )}
+
+      {confirmDialog.show && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          backdropFilter: 'blur(3px)'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '24px 30px',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '420px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+            animation: 'fadeIn 0.2s ease-out'
+          }}>
+            <h3 style={{ marginTop: 0, marginBottom: '12px', fontSize: '20px', color: '#1f2937', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              ⚠️ Konfirmasi
+            </h3>
+            <p style={{ marginBottom: '24px', color: '#4b5563', lineHeight: '1.5', fontSize: '15px' }}>
+              {confirmDialog.message}
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button 
+                onClick={() => setConfirmDialog({ show: false, message: "", onConfirm: null })}
+                style={{ padding: '10px 16px', border: 'none', borderRadius: '6px', backgroundColor: '#e5e7eb', color: '#374151', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                Batal
+              </button>
+              <button 
+                onClick={confirmDialog.onConfirm}
+                style={{ padding: '10px 16px', border: 'none', borderRadius: '6px', backgroundColor: '#dc3545', color: 'white', cursor: 'pointer', fontWeight: 'bold' }}
+              >
+                Ya, Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideIn {
+          from { transform: translateX(120%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+      
     </div>
   );
 }

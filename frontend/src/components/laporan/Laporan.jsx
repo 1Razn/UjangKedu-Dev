@@ -8,18 +8,23 @@ export default function Laporan() {
   const initialPropertiId = searchParams.get('properti_id') || '';
   const initialNamaProperti = searchParams.get('nama_properti') || '';
 
+  // State untuk form
   const [namaPelapor, setNamaPelapor] = useState('');
   const [propertiId, setPropertiId] = useState(initialPropertiId);
   const [namaPropertiDisplay, setNamaPropertiDisplay] = useState(initialNamaProperti);
   const [judul, setJudul] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
+  
+  // State untuk notifikasi
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationType, setNotificationType] = useState('success'); // 'success' atau 'error'
+  const [notificationType, setNotificationType] = useState('success'); 
   const [notificationMessage, setNotificationMessage] = useState('');
   
+  // State untuk data properti dari database
   const [daftarProperti, setDaftarProperti] = useState([]);
   const [loadingProperti, setLoadingProperti] = useState(true);
 
+  // Mengambil daftar properti saat halaman dimuat
   useEffect(() => {
     async function fetchProperti() {
       try {
@@ -45,25 +50,47 @@ export default function Laporan() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const userDataString = localStorage.getItem('user');
+      let currentUserId = 1; 
+      
+      if (userDataString) {
+          try {
+              const userData = JSON.parse(userDataString);
+              if (userData.id) {
+                  currentUserId = userData.id;
+              }
+          } catch (e) {
+              console.error("Gagal parsing data user dari localStorage", e);
+          }
+      }
+
+      // 2. Data yang dikirim (Udah ditambahin status: 'pending')
       await http.post('/laporan', {
-        nama_pelapor: namaPelapor,
+        user_id: currentUserId,   
         properti_id: propertiId,
-        judul,
-        deskripsi
+        judul_laporan: judul,     
+        keterangan: deskripsi,
+        status: 'pending' // <--- INI TAMBAHANNYA BIAR LOLOS VALIDASI
       });
       
       setNotificationType('success');
       setNotificationMessage('Laporan Anda telah berhasil terkirim ke sistem!');
       setShowNotification(true);
+      
+      // Kosongkan form setelah berhasil
       setNamaPelapor('');
       setJudul('');
       setDeskripsi('');
-      // Jangan reset propertiId agar user bisa lapor properti yang sama lagi jika perlu
       
       setTimeout(() => setShowNotification(false), 4000);
     } catch (error) {
+      console.error('Error pengiriman:', error.response?.data || error);
+      
+      // Nampilin pesan error spesifik dari backend di notif merahnya
+      const errorMsg = error.response?.data?.message || 'Gagal mengirim laporan. Silakan coba lagi.';
+      
       setNotificationType('error');
-      setNotificationMessage('Gagal mengirim laporan. Silakan coba lagi.');
+      setNotificationMessage(errorMsg);
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 4000);
     }
@@ -135,6 +162,7 @@ export default function Laporan() {
         <h2 style={{ textAlign: 'center', marginBottom: '25px', fontWeight: '700' }}>Form Pengajuan Laporan</h2>
         
         <form onSubmit={handleSubmit}>
+          
           {/* Nama Pelapor */}
           <div style={{ marginBottom: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Nama Pelapor</label>
@@ -148,14 +176,13 @@ export default function Laporan() {
             />
           </div>
 
-          {/* ✅ Dropdown Properti dari Database */}
+          {/* Dropdown Properti dari Database */}
           <div style={{ marginBottom: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Pilih Properti Bermasalah</label>
             <select 
               value={propertiId} 
               onChange={(e) => {
                 setPropertiId(e.target.value);
-                // Cari nama properti yang dipilih untuk ditampilkan
                 const selected = daftarProperti.find(p => p.id == e.target.value);
                 if (selected) setNamaPropertiDisplay(selected.judul || 'Properti Tanpa Nama');
               }}
