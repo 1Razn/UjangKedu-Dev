@@ -40,6 +40,34 @@
   box-shadow: 0 16px 40px rgba(59, 130, 246, 0.12);
 }
 
+/* Paket color variants */
+.package-card.bronze {
+  border-color: #cd7f32;
+}
+.package-card.bronze.selected {
+  box-shadow: 0 16px 40px rgba(205,127,50,0.12);
+  border-color: #cd7f32;
+}
+.package-card.bronze .package-price { color: #cd7f32; }
+
+.package-card.silver {
+  border-color: #c0c0c0;
+}
+.package-card.silver.selected {
+  box-shadow: 0 16px 40px rgba(192,192,192,0.12);
+  border-color: #c0c0c0;
+}
+.package-card.silver .package-price { color: #6b6b6b; }
+
+.package-card.gold {
+  border-color: #d4af37;
+}
+.package-card.gold.selected {
+  box-shadow: 0 16px 40px rgba(212,175,55,0.12);
+  border-color: #d4af37;
+}
+.package-card.gold .package-price { color: #d4af37; }
+
 .package-select-btn {
   align-self: flex-start;
 }
@@ -68,6 +96,22 @@
   background: rgba(59, 130, 246, 0.08);
   border-radius: 14px;
   border: 1px solid rgba(59, 130, 246, 0.16);
+}
+
+.selected-package-summary.bronze {
+  background: rgba(205,127,50,0.06);
+  border: 1px solid rgba(205,127,50,0.16);
+  color: #8a4f28;
+}
+.selected-package-summary.silver {
+  background: rgba(192,192,192,0.06);
+  border: 1px solid rgba(192,192,192,0.16);
+  color: #444;
+}
+.selected-package-summary.gold {
+  background: rgba(212,175,55,0.06);
+  border: 1px solid rgba(212,175,55,0.16);
+  color: #6b4a00;
 }
 
 .promo-form {

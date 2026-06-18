@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import http from "../../utils/http.js";
 import PackageCard from "./PackageCard.jsx";
 import { DEFAULT_PACKAGES } from "./promoData.js";
@@ -37,7 +37,11 @@ export default function CTA() {
 
         <div className="promo-grid">
           {packages.map((paket) => (
-            <PackageCard key={paket.id} paket={paket} />
+            <PackageCard
+              key={paket.id}
+              paket={paket}
+              linkTo={`/promosi?paketId=${paket.id}`}
+            />
           ))}
         </div>
 
