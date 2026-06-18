@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getPropertyByIdApi } from "../../api/propertiApi.js"; 
+import KomentarList from "../komentar/KomentarList";
 import "./PropertyDetail.css";
 
 export default function PropertyDetail() {
@@ -173,6 +174,8 @@ export default function PropertyDetail() {
             <button className="btn btn-primary detail-agent-btn">Hubungi Agen</button>
             <button className="btn btn-outline detail-agent-btn">Kirim Pesan</button>
           </div>
+             <KomentarList propertiId={property.id} />
+             
         </aside>
       </div>
     </div>
