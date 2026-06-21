@@ -1,24 +1,38 @@
 import { useState, useEffect, useMemo } from "react";
 import PropertyCard from "./PropertyCard.jsx";
 import http from "../../utils/http.js";
+import { getCategories } from "../../api/KategoriApi.js";
 import "./Main_content.css";
 
 export default function Featured({ selectedCategory, onClearCategory }) {
   const [properties, setProperties] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchProperties() {
+    async function fetchData() {
       try {
         setLoading(true);
-        const response = await http.get("/properti");
-        const rawData = response.data.data || response.data;
+        
+        // Fetch properti
+        const propertiResponse = await http.get("/properti");
+        const rawData = propertiResponse.data.data || propertiResponse.data;
+        
+        // Fetch kategori dari database
+        const kategoriResponse = await getCategories();
+        const kategoriData = Array.isArray(kategoriResponse) ? kategoriResponse : [];
+        
+        // Buat mapping kategori ID ke nama
+        const kategoriMap = {};
+        kategoriData.forEach(kat => {
+          kategoriMap[kat.id] = kat.nama_kategori;
+        });
         
         const mappedData = rawData.map(item => ({
           id: item.id,
           title: item.judul || "Properti Tanpa Nama",
-          category: item.category || "Rumah", 
+          category: kategoriMap[item.kategori_properti_id] || item.category || "Rumah", 
           price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : "Harga tidak tersedia",
           location: item.alamat || "Lokasi belum diatur",
           type: item.tipe || "Jual",
@@ -27,19 +41,21 @@ export default function Featured({ selectedCategory, onClearCategory }) {
           area: item.luas_properti || 0,
           image: item.foto_properti || "https://placehold.co/600x400?text=Gambar+Properti",
           featured: item.featured == 1 || item.featured === true,
-          agent: item.agent_name || "Agen BOTY"
+          agent: item.agent_name || item.nama_agen || "Agen BOTY"
         }));
 
         setProperties(mappedData);
+        setCategories(kategoriData);
+        setError(null);
       } catch (err) {
-        console.error("Gagal memuat properti dari server:", err);
-        setError("Gagal memuat daftar properti.");
+        console.error("Gagal memuat data:", err);
+        setError("Gagal memuat data properti atau kategori.");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchProperties();
+    fetchData();
   }, []);
 
   const filteredProperties = useMemo(() => {
@@ -70,7 +86,7 @@ export default function Featured({ selectedCategory, onClearCategory }) {
         )}
 
         {loading ? (
-          <p style={{ textAlign: "center", padding: "20px" }}>Memuat properti unggulan... </p>
+          <p style={{ textAlign: "center", padding: "20px" }}>Memuat properti unggulan... ⏳</p>
         ) : error ? (
           <p style={{ textAlign: "center", padding: "20px", color: "red" }}>{error}</p>
         ) : filteredProperties.length === 0 ? (

@@ -112,18 +112,6 @@ export default function PropertyDetail() {
               </div>
             )}
           </div>
-          {property.location && (
-            <div className="detail-block">
-              <h2 className="detail-h2">Lokasi & Alamat</h2>
-              <p className="detail-desc">{property.location}</p>
-            </div>
-          )}
-          {property.description && (
-            <div className="detail-block">
-              <h2 className="detail-h2">Deskripsi</h2>
-              <p className="detail-desc">{property.description}</p>
-            </div>
-          )}
           <div className="detail-block">
             <h2 className="detail-h2">Detail Properti</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "15px", color: "#475569" }}>

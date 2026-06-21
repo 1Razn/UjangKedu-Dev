@@ -1,38 +1,99 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import http from "../../utils/http.js";
 import PackageCard from "./PackageCard.jsx";
-import { DEFAULT_PACKAGES } from "./promoData.js";
+import { getPackages } from "../../api/paketIklanApi.js";
 import "./Promosi.css";
 
-export default function CTA() {
-  const [packages, setPackages] = useState(DEFAULT_PACKAGES);
+export default function Promosi() {
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  const paketId = searchParams.get("paketId");
 
   useEffect(() => {
-    http.get("/iklan")
-      .then((response) => {
-        if (response.data && Array.isArray(response.data.data) && response.data.data.length > 0) {
-          setPackages(response.data.data.slice(0, 3));
-        }
-      })
-      .catch(() => {
-        // fallback to static packages
-      })
-      .finally(() => setLoading(false));
+    async function fetchPackages() {
+      try {
+        setLoading(true);
+        const data = await getPackages();
+        setPackages(Array.isArray(data) ? data : []);
+        setError(null);
+      } catch (err) {
+        console.error("Gagal memuat paket iklan:", err);
+        setError("Gagal memuat daftar paket iklan.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPackages();
   }, []);
 
+  const handleSelectPackage = (selectedPaketId) => {
+    // Langsung navigate ke form pasang iklan dengan paket yang dipilih
+    navigate(`/promosi?paketId=${selectedPaketId}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="promo-page">
+        <div className="container">
+          <div className="promo-header">
+            <div>
+              <h2 className="section-title">Paket Iklan Properti</h2>
+              <p className="section-subtitle">
+                Pilih paket iklan yang tepat untuk meningkatkan visibilitas properti Anda di BOTY.
+              </p>
+            </div>
+          </div>
+          <div className="promo-loading">
+            <div className="loading-spinner"></div>
+            <p>Memuat paket iklan... ⏳</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="promo-page">
+        <div className="container">
+          <div className="promo-header">
+            <div>
+              <h2 className="section-title">Paket Iklan Properti</h2>
+              <p className="section-subtitle">
+                Pilih paket iklan yang tepat untuk meningkatkan visibilitas properti Anda di BOTY.
+              </p>
+            </div>
+          </div>
+          <div className="promo-error">
+            <p>⚠️ {error}</p>
+            <button
+              className="btn btn-primary"
+              onClick={() => window.location.reload()}
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <section className="section promo-preview">
+    <div className="promo-page">
       <div className="container">
         <div className="promo-header">
           <div>
-            <h2 className="section-title">Promosi Paket Iklan</h2>
+            <h2 className="section-title">Paket Iklan Properti</h2>
             <p className="section-subtitle">
               Pilih paket iklan yang tepat untuk meningkatkan visibilitas properti Anda di BOTY.
             </p>
           </div>
-          <Link to="/promosi" className="btn btn-outline">Lihat Semua Paket</Link>
+          <Link to="/" className="btn btn-outline">Lihat Semua Paket</Link>
         </div>
 
         <div className="promo-grid">
@@ -40,10 +101,17 @@ export default function CTA() {
             <PackageCard
               key={paket.id}
               paket={paket}
-              linkTo={`/promosi?paketId=${paket.id}`}
+              selected={paketId === paket.id.toString()}
+              onSelect={handleSelectPackage}
             />
           ))}
         </div>
+
+        {packages.length === 0 && (
+          <div className="promo-empty">
+            <p>Belum ada paket iklan yang tersedia.</p>
+          </div>
+        )}
 
         <div className="cta-card">
           <div className="cta-left">
@@ -57,13 +125,13 @@ export default function CTA() {
           </div>
           <div className="cta-right">
             <div className="cta-stats">
-              <div><strong>50K+</strong><span>Listing</span></div>
-              <div><strong>200+</strong><span>Kota</span></div>
-              <div><strong>4.8★</strong><span>Rating Pengguna</span></div>
+              <div> <strong>50K+</strong> <span>Listing</span> </div>
+              <div> <strong>200+</strong> <span>Kota</span> </div>
+              <div> <strong>4.8★</strong> <span>Rating Pengguna</span> </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

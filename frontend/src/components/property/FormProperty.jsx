@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createProperty } from "../../api/propertiApi.js";
-import http from "../../utils/http.js";
+import { getPackages } from "../../api/paketIklanApi.js";
 import PackageCard from "../promosi/PackageCard.jsx";
-import { DEFAULT_PACKAGES } from "../promosi/promoData.js";
 import "../promosi/Promosi.css";
 
 export default function PromosiPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [packages, setPackages] = useState(DEFAULT_PACKAGES);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedPackageId, setSelectedPackageId] = useState(DEFAULT_PACKAGES[0]?.id || null);
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [form, setForm] = useState({
     kategori: "Rumah",
     judul: "",
@@ -22,12 +21,13 @@ export default function PromosiPage() {
     harga: "",
     tanggal_tayang: "",
     tanggal_kadaluarsa: "",
-    paket_iklan_id: DEFAULT_PACKAGES[0]?.id || null,
+    paket_iklan_id: null,
     user_id: null,
     foto_properti: null,
   });
   const [submitted, setSubmitted] = useState(false);
 
+  // Fetch paket iklan dari database
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
@@ -38,25 +38,35 @@ export default function PromosiPage() {
     const query = new URLSearchParams(location.search);
     const queryPackageId = Number(query.get("paketId"));
 
-    http.get("/iklan")
-      .then((response) => {
-        if (response.data && Array.isArray(response.data.data) && response.data.data.length > 0) {
-          setPackages(response.data.data);
-          const defaultId = response.data.data[0].id;
-          const selectedId = responsePackageIdIsValid(response.data.data, queryPackageId)
+    async function fetchPackages() {
+      try {
+        setLoading(true);
+        const data = await getPackages();
+        const packagesData = Array.isArray(data) ? data : [];
+        
+        if (packagesData.length > 0) {
+          setPackages(packagesData);
+          const defaultId = packagesData[0].id;
+          const selectedId = isValidPackageId(packagesData, queryPackageId)
             ? queryPackageId
             : defaultId;
           setSelectedPackageId(selectedId);
           setForm((prev) => ({ ...prev, paket_iklan_id: selectedId }));
+        } else {
+          setError("Tidak ada paket iklan yang tersedia.");
         }
-      })
-      .catch(() => {
+      } catch (err) {
+        console.error("Gagal memuat paket iklan:", err);
         setError("Gagal memuat paket iklan. Silakan muat ulang halaman.");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPackages();
   }, [location.search]);
 
-  const responsePackageIdIsValid = (packagesData, packageId) => {
+  const isValidPackageId = (packagesData, packageId) => {
     return Number.isInteger(packageId) && packageId > 0 && packagesData.some((paket) => paket.id === packageId);
   };
 
@@ -85,6 +95,18 @@ export default function PromosiPage() {
       return;
     }
 
+    // Validasi tanggal
+    const today = new Date().toISOString().split('T')[0];
+    if (form.tanggal_tayang < today) {
+      setError("Tanggal tayang tidak boleh di masa lalu.");
+      return;
+    }
+
+    if (form.tanggal_kadaluarsa <= form.tanggal_tayang) {
+      setError("Tanggal kadaluarsa harus lebih besar dari tanggal tayang.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("judul", form.judul);
     formData.append("deskripsi", form.deskripsi);
@@ -93,7 +115,7 @@ export default function PromosiPage() {
     formData.append("harga", form.harga);
     formData.append("tanggal_tayang", form.tanggal_tayang);
     formData.append("tanggal_kadaluarsa", form.tanggal_kadaluarsa);
-    formData.append("kategori_properti_id", 1);
+    formData.append("kategori_properti_id", getKategoriId(form.kategori));
     formData.append("paket_iklan_id", selectedPackageId);
     formData.append("user_id", form.user_id);
 
@@ -107,7 +129,7 @@ export default function PromosiPage() {
       setSubmitted(true);
       setTimeout(() => {
         navigate("/");
-      }, 800);
+      }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Terjadi kesalahan saat mengirim form.");
       console.error(err);
@@ -116,11 +138,23 @@ export default function PromosiPage() {
     }
   };
 
+  // Helper untuk mapping kategori ke ID
+  const getKategoriId = (kategoriNama) => {
+    const kategoriMap = {
+      "Rumah": 1,
+      "Ruko": 2,
+      "Tanah": 3,
+      "Apartemen": 4,
+      "Kost": 5
+    };
+    return kategoriMap[kategoriNama] || 1;
+  };
+
   const selectedPackage = packages.find((paket) => paket.id === selectedPackageId);
 
   return (
     <div className="promosi-page">
-      <section className="section promo-hero">
+      {/* <section className="section promo-hero">
         <div className="container">
           <div className="promo-hero-body">
             <div>
@@ -135,14 +169,17 @@ export default function PromosiPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="section" id="package-list">
         <div className="container">
           <div className="section-head">
             <h2 className="section-title">Daftar Paket Iklan</h2>
-            <p className="section-subtitle">Paket iklan untuk memperkuat visibilitas properti Anda.</p>
+            <div className="promo-hero-actions">
+                <Link to="/" className="btn btn-outline">Kembali ke Beranda</Link>
+              </div>
           </div>
+
           {loading ? (
             <p>Memuat paket iklan...</p>
           ) : (
@@ -157,6 +194,7 @@ export default function PromosiPage() {
               ))}
             </div>
           )}
+
           <div className="promo-form-wrapper">
             <div className="form-header">
               <div>
@@ -164,17 +202,17 @@ export default function PromosiPage() {
                 <p className="section-subtitle">Isi data properti Anda dan pilih paket yang paling sesuai.</p>
               </div>
               {selectedPackage && (
-                    <div className={`selected-package-summary ${(() => {
-                      const n = (selectedPackage.nama_paket || '').toLowerCase();
-                      if (n.includes('bronze')) return 'bronze';
-                      if (n.includes('silver')) return 'silver';
-                      if (n.includes('gold')) return 'gold';
-                      return '';
-                    })()} `}>
-                      <strong>Paket yang dipilih:</strong>
-                      <span>{selectedPackage.nama_paket} ({selectedPackage.durasi_iklan})</span>
-                    </div>
-                  )}
+                <div className={`selected-package-summary ${(() => {
+                  const n = (selectedPackage.nama_paket || '').toLowerCase();
+                  if (n.includes('bronze')) return 'bronze';
+                  if (n.includes('silver')) return 'silver';
+                  if (n.includes('gold')) return 'gold';
+                  return '';
+                })()}`}>
+                  <strong>Paket yang dipilih:</strong>
+                  <span>{selectedPackage.nama_paket} ({selectedPackage.durasi_iklan})</span>
+                </div>
+              )}
             </div>
 
             <form className="promo-form" onSubmit={handleSubmit}>
@@ -188,7 +226,8 @@ export default function PromosiPage() {
                     <option value="Rumah">Rumah</option>
                     <option value="Apartemen">Apartemen</option>
                     <option value="Tanah">Tanah</option>
-                    <option value="Komersial">Komersial</option>
+                    <option value="Ruko">Ruko</option>
+                    <option value="Kost">Kost</option>
                   </select>
                 </label>
 
@@ -200,6 +239,7 @@ export default function PromosiPage() {
                     onChange={(e) => handleInput("judul", e.target.value)}
                     placeholder="Contoh: Rumah Minimalis 2 Lantai"
                     required
+                    maxLength="20"
                   />
                 </label>
 
@@ -211,6 +251,7 @@ export default function PromosiPage() {
                     onChange={(e) => handleInput("harga", e.target.value)}
                     placeholder="Contoh: 850000000"
                     required
+                    maxLength="15"
                   />
                 </label>
 
@@ -222,6 +263,7 @@ export default function PromosiPage() {
                     onChange={(e) => handleInput("luas_properti", e.target.value)}
                     placeholder="Contoh: 120"
                     required
+                    maxLength="10"
                   />
                 </label>
 
@@ -291,7 +333,7 @@ export default function PromosiPage() {
 
               {submitted && (
                 <p className="success-text">
-                  Terima kasih! Permintaan pasang iklan Anda telah dikirim, kembali ke beranda...
+                  Terima kasih! Iklan Anda telah berhasil diposting. Kembali ke beranda...
                 </p>
               )}
             </form>

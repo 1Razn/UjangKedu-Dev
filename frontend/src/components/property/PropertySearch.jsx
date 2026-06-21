@@ -1,48 +1,78 @@
-import React, { useState } from 'react';
-import { Search, MapPin, AlertTriangle, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import http from '../../utils/http.js';
 import './PropertySearch.css';
 
-const INITIAL_PROPERTIES = [
-  {
-    id: 1,
-    title: 'Kost Eksklusif Jaks',
-    price: 'Rp 2.500.000',
-    address: 'Jl. Fatmawati No. 45',
-    size: '200 m²',
-    image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 2,
-    title: 'Ruko 2 Lantai Bdg',
-    price: 'Rp 1.800.000.000',
-    address: 'Jl. Dago Atas No. 88',
-    size: '100 m²',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 3,
-    title: 'Apartemen Studio Jkt',
-    price: 'Rp 650.000.000',
-    address: 'Jl. Sudirman Kav. 52',
-    size: '36 m²',
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 4,
-    title: 'Rumah Mewah 3 Kamar',
-    price: 'Rp 1.500.000.000',
-    address: 'Jl. Anggrek No. 45, Dago',
-    size: '200 m²',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=500&q=80'
-  }
-];
-
 export default function PropertySearch() {
+  const [properties, setProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredProperties = INITIAL_PROPERTIES.filter((property) => {
-    return property.title.toLowerCase().includes(searchQuery.toLowerCase());
+  // Fetch data from database
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
+        const response = await http.get('/properti');
+        const rawData = response.data.data || response.data;
+        
+        // Map database fields to UI fields
+        const mappedData = rawData.map(item => ({
+          id: item.id,
+          title: item.judul || 'Properti Tanpa Nama',
+          price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : 'Hubungi Kami',
+          address: item.alamat || 'Lokasi belum diatur',
+          size: item.luas_properti ? `${item.luas_properti} m²` : '-',
+          image: item.foto_properti || 'https://placehold.co/600x400?text=Gambar+Properti',
+          type: item.tipe || 'Jual',
+          bedrooms: item.kamar_tidur || '-',
+          bathrooms: item.kamar_mandi || '-',
+          agent: item.nama_agen || 'User'
+        }));
+        
+        setProperties(mappedData);
+        setError(null);
+      } catch (err) {
+        setError('Gagal memuat data properti');
+        console.error('Error fetching properties:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
+  // Filter properties based on search query
+  const filteredProperties = properties.filter((property) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      property.title.toLowerCase().includes(searchLower) ||
+      property.address.toLowerCase().includes(searchLower)
+    );
   });
+
+  if (loading) {
+    return (
+      <div className="search-custom-container">
+        <div className="loading-custom">
+          <p>Memuat data properti... ⏳</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="search-custom-container">
+        <div className="error-custom">
+          <p>⚠️ {error}</p>
+          <button onClick={() => window.location.reload()}>Coba Lagi</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="search-custom-container">
@@ -56,7 +86,7 @@ export default function PropertySearch() {
       {/* Search Input */}
       <div className="search-box-wrapper">
         <div className="search-icon-inside">
-          <Search size={16} />
+          🔍
         </div>
         <input
           type="text"
@@ -71,49 +101,64 @@ export default function PropertySearch() {
       {filteredProperties.length > 0 ? (
         <div className="property-grid-custom">
           {filteredProperties.map((item) => (
-            <div key={item.id} className="card-custom">
-              
-              {/* Gambar Properti */}
-              <div className="image-wrapper-custom">
-                <img src={item.image} alt={item.title} className="img-custom" />
-                <span className="badge-jual">Jual</span>
-                <div className="badge-heart">❤️</div>
-              </div>
-
-              {/* Detail Konten */}
-              <div className="content-wrapper-custom">
-                <div>
-                  <h3 className="price-custom">{item.price}</h3>
-                  <h4 className="title-custom">{item.title}</h4>
-                  <p className="address-custom">
-                    <MapPin size={12} style={{ flexShrink: 0 }} />
-                    {item.address}
-                  </p>
+            <Link 
+              key={item.id} 
+              to={`/property/${item.id}`} 
+              className="card-custom-link"
+            >
+              <div className="card-custom">
+                
+                {/* Gambar Properti */}
+                <div className="image-wrapper-custom">
+                  <img src={item.image} alt={item.title} className="img-custom" />
+                  <span className="badge-jual">{item.type}</span>
+                  <div className="badge-heart">❤️</div>
                 </div>
 
-                {/* Bagian Bawah Kartu */}
-                <div className="divider-custom">
-                  <div className="meta-info-custom">
-                    <div>
-                      <span style={{ marginRight: '8px' }}>-</span>
-                      <span>-</span>
+                {/* Detail Konten */}
+                <div className="content-wrapper-custom">
+                  <div>
+                    <h3 className="price-custom">{item.price}</h3>
+                    <h4 className="title-custom">{item.title}</h4>
+                    <p className="address-custom">
+                      📍 {item.address}
+                    </p>
+                  </div>
+
+                  {/* Bagian Bawah Kartu */}
+                  <div className="divider-custom">
+                    <div className="meta-info-custom">
+                      <div>
+                        <span style={{ marginRight: '8px' }}>{item.bedrooms}</span>
+                        <span>{item.bathrooms}</span>
+                      </div>
+                      <span>{item.size}</span>
                     </div>
-                    <span>{item.size}</span>
+
+                    <div className="action-buttons-custom">
+                      <button 
+                        className="btn-user-custom"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        👤 {item.agent}
+                      </button>
+                      <button 
+                        className="btn-lapor-custom"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Handle lapor functionality here if needed
+                        }}
+                      >
+                        ⚠️ Lapor
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="action-buttons-custom">
-                    <button className="btn-user-custom">
-                      <User size={14} /> User
-                    </button>
-                    <button className="btn-lapor-custom">
-                      <AlertTriangle size={12} /> Lapor
-                    </button>
-                  </div>
                 </div>
 
               </div>
-
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
