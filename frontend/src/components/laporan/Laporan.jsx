@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import http from '../../utils/http.js';
+import http from '../../utils/http.js'; 
 
 export default function Laporan() {
   const [searchParams] = useSearchParams();
@@ -8,23 +8,18 @@ export default function Laporan() {
   const initialPropertiId = searchParams.get('properti_id') || '';
   const initialNamaProperti = searchParams.get('nama_properti') || '';
 
-  // State untuk form
-  const [namaPelapor, setNamaPelapor] = useState('');
   const [propertiId, setPropertiId] = useState(initialPropertiId);
   const [namaPropertiDisplay, setNamaPropertiDisplay] = useState(initialNamaProperti);
   const [judul, setJudul] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   
-  // State untuk notifikasi
   const [showNotification, setShowNotification] = useState(false);
   const [notificationType, setNotificationType] = useState('success'); 
   const [notificationMessage, setNotificationMessage] = useState('');
   
-  // State untuk data properti dari database
   const [daftarProperti, setDaftarProperti] = useState([]);
   const [loadingProperti, setLoadingProperti] = useState(true);
 
-  // Mengambil daftar properti saat halaman dimuat
   useEffect(() => {
     async function fetchProperti() {
       try {
@@ -56,38 +51,31 @@ export default function Laporan() {
       if (userDataString) {
           try {
               const userData = JSON.parse(userDataString);
-              if (userData.id) {
-                  currentUserId = userData.id;
-              }
+              if (userData.id) currentUserId = userData.id;
           } catch (e) {
-              console.error("Gagal parsing data user dari localStorage", e);
+              console.error("Gagal parsing data user", e);
           }
       }
 
-      // 2. Data yang dikirim (Udah ditambahin status: 'pending')
       await http.post('/laporan', {
         user_id: currentUserId,   
         properti_id: propertiId,
         judul_laporan: judul,     
         keterangan: deskripsi,
-        status: 'pending' // <--- INI TAMBAHANNYA BIAR LOLOS VALIDASI
+        status: 'pending' 
       });
       
       setNotificationType('success');
       setNotificationMessage('Laporan Anda telah berhasil terkirim ke sistem!');
       setShowNotification(true);
       
-      // Kosongkan form setelah berhasil
-      setNamaPelapor('');
       setJudul('');
       setDeskripsi('');
       
       setTimeout(() => setShowNotification(false), 4000);
     } catch (error) {
       console.error('Error pengiriman:', error.response?.data || error);
-      
-      // Nampilin pesan error spesifik dari backend di notif merahnya
-      const errorMsg = error.response?.data?.message || 'Gagal mengirim laporan. Silakan coba lagi.';
+      const errorMsg = error.response?.data?.message || 'Gagal mengirim laporan.';
       
       setNotificationType('error');
       setNotificationMessage(errorMsg);
@@ -98,49 +86,28 @@ export default function Laporan() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '50px auto', padding: '0 20px', position: 'relative' }}>
-      {/* Notifikasi */}
+    
       {showNotification && (
         <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
+          position: 'fixed', top: '20px', right: '20px',
           backgroundColor: notificationType === 'success' ? '#4caf50' : '#f44336',
-          color: 'white',
-          padding: '16px 24px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          zIndex: 9999,
-          animation: 'slideIn 0.3s ease-out',
-          fontWeight: '600',
-          fontSize: '15px'
+          color: 'white', padding: '16px 24px', borderRadius: '8px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)', display: 'flex',
+          alignItems: 'center', gap: '12px', zIndex: 9999,
+          animation: 'slideIn 0.3s ease-out', fontWeight: '600', fontSize: '15px'
         }}>
           <span style={{ fontSize: '20px' }}>{notificationType === 'success' ? '✅' : '❌'}</span>
           <span>{notificationMessage}</span>
         </div>
       )}
 
-      {/* Tombol Kembali */}
+      
       <div style={{ marginBottom: '25px' }}>
-        <Link 
-          to="/" 
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '10px',
-            backgroundColor: '#f3f4f6',
-            color: '#1f2937',
-            padding: '10px 18px',
-            borderRadius: '20px',
-            textDecoration: 'none',
-            fontSize: '14px',
-            fontWeight: '700',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-            border: '1px solid #e5e7eb',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
+        <Link to="/" style={{
+            display: 'inline-flex', alignItems: 'center', gap: '10px',
+            backgroundColor: '#f3f4f6', color: '#1f2937', padding: '10px 18px',
+            borderRadius: '20px', textDecoration: 'none', fontSize: '14px',
+            fontWeight: '700', border: '1px solid #e5e7eb', cursor: 'pointer', transition: 'all 0.2s ease'
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = '#0056b3';
@@ -152,42 +119,25 @@ export default function Laporan() {
             e.currentTarget.style.color = '#1f2937';
             e.currentTarget.style.transform = 'translateX(0)';
           }}
-        >
+          >
           <span style={{ fontSize: '16px', fontWeight: 'bold' }}>←</span> Kembali ke Beranda
         </Link>
       </div>
 
-      {/* Form */}
+     
       <div style={{ padding: '30px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', borderRadius: '8px', backgroundColor: '#fff', color: '#333' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '25px', fontWeight: '700' }}>Form Pengajuan Laporan</h2>
-        
         <form onSubmit={handleSubmit}>
-          
-          {/* Nama Pelapor */}
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Nama Pelapor</label>
-            <input 
-              type="text" 
-              value={namaPelapor} 
-              onChange={(e) => setNamaPelapor(e.target.value)} 
-              required 
-              placeholder="Masukkan nama Anda..."
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-            />
-          </div>
 
-          {/* Dropdown Properti dari Database */}
           <div style={{ marginBottom: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Pilih Properti Bermasalah</label>
-            <select 
-              value={propertiId} 
+            <select value={propertiId} required
               onChange={(e) => {
                 setPropertiId(e.target.value);
                 const selected = daftarProperti.find(p => p.id == e.target.value);
                 if (selected) setNamaPropertiDisplay(selected.judul || 'Properti Tanpa Nama');
               }}
-              required
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
             >
               <option value="">-- Pilih Properti --</option>
               {loadingProperti ? (
@@ -200,37 +150,20 @@ export default function Laporan() {
                 ))
               )}
             </select>
-            {namaPropertiDisplay && propertiId && (
-              <p style={{ marginTop: '8px', fontSize: '13px', color: '#666' }}>
-                Properti terpilih: <strong>{namaPropertiDisplay}</strong>
-              </p>
-            )}
           </div>
 
-          {/* Judul Laporan */}
           <div style={{ marginBottom: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Judul Laporan</label>
-            <input 
-              type="text" 
-              value={judul} 
-              onChange={(e) => setJudul(e.target.value)} 
-              required 
-              placeholder="Contoh: Info harga tidak sesuai / Iklan Palsu"
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-            />
+            <input type="text" value={judul} onChange={(e) => setJudul(e.target.value)} required 
+              placeholder="Contoh: Info harga tidak sesuai / Iklan palsu"
+              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
           </div>
 
-          {/* Deskripsi */}
           <div style={{ marginBottom: '25px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Deskripsi Masalah</label>
-            <textarea 
-              value={deskripsi} 
-              onChange={(e) => setDeskripsi(e.target.value)} 
-              required 
-              rows="5"
-              placeholder="Tuliskan detail masalah properti tersebut di sini..."
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-            />
+            <textarea value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} required rows="5"
+              placeholder="Tuliskan detail masalah di sini..."
+              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
           </div>
 
           <button type="submit" style={{ width: '100%', backgroundColor: '#0056b3', color: 'white', padding: '12px', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' }}>
@@ -238,13 +171,7 @@ export default function Laporan() {
           </button>
         </form>
       </div>
-
-      <style>{`
-        @keyframes slideIn {
-          from { transform: translateX(120%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-      `}</style>
+      <style>{`@keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`}</style>
     </div>
   );
 }

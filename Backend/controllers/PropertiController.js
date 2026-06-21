@@ -6,7 +6,6 @@ const fs = require('fs');
 const db = require('../config/database'); // Sesuaikan jika lokasi database config kamu beda
 
 class PropertiController {
-  // ✅ UPDATE: Menggunakan raw query agar bisa JOIN kategori
   index(req, res) {
     const query = `
       SELECT 
@@ -82,7 +81,6 @@ class PropertiController {
       newProperti.foto_properti = `uploads/properti/${req.file.filename}`;
     }
 
-    // Menggunakan model create lama karena INSERT tidak perlu JOIN
     Properti.create(newProperti, (err, result) => {
       if (err) {
         if (req.file) fs.unlinkSync(req.file.path);
@@ -148,16 +146,31 @@ class PropertiController {
   }
 
   destroy(req, res) {
-    const idError = validateId(req.params.id);
+    const id = req.params.id;
+    const idError = validateId(id);
     if (idError) return errorHandler(res, new Error(idError), 400, idError);
 
-    Properti.delete(req.params.id, (err, result) => {
-      if (err) return errorHandler(res, err, 500, 'Gagal menghapus properti');
-      if (result.affectedRows === 0) return errorHandler(res, new Error('Not Found'), 404, 'Properti tidak ditemukan');
-      
-      res.status(200).json({ 
-        success: true, 
-        message: 'Properti berhasil dihapus' 
+    db.query("DELETE FROM komentar WHERE properti_id = ?", [id], (errKomentar) => {
+      if (errKomentar) {
+        console.error("Gagal hapus komentar terkait:", errKomentar);
+        return errorHandler(res, errKomentar, 500, 'Gagal menghapus komentar terkait properti');
+      }
+
+      db.query("DELETE FROM laporan WHERE properti_id = ?", [id], (errLaporan) => {
+        if (errLaporan) {
+          console.error("Gagal hapus laporan terkait:", errLaporan);
+          return errorHandler(res, errLaporan, 500, 'Gagal menghapus laporan terkait properti');
+        }
+
+        Properti.delete(id, (err, result) => {
+          if (err) return errorHandler(res, err, 500, 'Gagal menghapus properti');
+          if (result.affectedRows === 0) return errorHandler(res, new Error('Not Found'), 404, 'Properti tidak ditemukan');
+          
+          res.status(200).json({ 
+            success: true, 
+            message: 'Properti beserta komentar dan laporan terkait berhasil diblokir & dihapus' 
+          });
+        });
       });
     });
   }
