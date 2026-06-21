@@ -2,22 +2,14 @@ import { useState } from "react";
 import "./Hero.css";
 import { useNavigate } from "react-router-dom";
 
-const TABS = [
-  { id: "jual", label: "Jual" },
-  { id: "sewa", label: "Sewa" },
-  { id: "booking", label: "Booking Tanah" },
-];
-
 const POPULAR = ["Rumah BSD", "Apartemen Jakarta", "Tanah Bogor", "Villa Bandung"];
 
 export default function Hero() {
-  const navigate = useNavigate(); // ✅ Tambahkan pemicu navigasi di sini
-  const [tab, setTab] = useState("jual");
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // ✅ Jalankan perpindahan halaman ke rute pencarian custom kita
     navigate("/search-custom"); 
   };
 
@@ -31,17 +23,6 @@ export default function Hero() {
         </div>
 
         <div className="hero-search">
-          <div className="hero-tabs">
-            {TABS.map((t) => (
-              <button
-                key={t.id}
-                className={`hero-tab ${tab === t.id ? "active" : ""}`}
-                onClick={() => setTab(t.id)}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
           <form className="hero-search-form" onSubmit={handleSearch}>
             <div className="hero-input-wrap">
               

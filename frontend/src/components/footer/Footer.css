@@ -1,25 +1,79 @@
 .footer {
   margin-top: 32px;
-  background: var(--bg-soft);
-  border-top: 1px solid var(--border);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 56px 0 24px;
+  color: white;
 }
+
 .footer-grid {
-  display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 36px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 36px;
 }
-.footer-brand p { margin-top: 14px; color: var(--text-muted); font-size: 14px; }
-.footer-col h4 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
-.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.footer-col a { font-size: 14px; color: var(--text-muted); transition: color 0.15s; }
-.footer-col a:hover { color: var(--primary); }
+
+.footer-brand p {
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-col h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: white;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  color: white;
+  font-weight: 500;
+}
+
 .footer-bottom {
-  margin-top: 40px; padding-top: 20px;
-  border-top: 1px solid var(--border);
-  text-align: center; color: var(--text-muted); font-size: 13px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
 }
+
+.footer .navbar-logo-text {
+  color: white !important;
+}
+
+.footer .navbar-logo-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
 @media (max-width: 800px) {
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
+
 @media (max-width: 480px) {
-  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer {
+    padding: 40px 0 20px;
+  }
 }

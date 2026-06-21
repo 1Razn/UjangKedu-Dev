@@ -5,38 +5,91 @@
   z-index: 1;
   padding-bottom: 24px;
 }
+
+/* ✅ UBAH: Grid 5 kolom agar semua kategori sebaris */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr); /* Dari 4 jadi 5 kolom */
   gap: 16px;
 }
+
 .category-card {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--white); padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--white);
+  padding: 18px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
 }
+
 .category-card:hover,
 .category-card.active {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
   border-color: var(--primary);
 }
+
 .category-card.active {
   background: rgba(77, 66, 255, 0.08);
 }
+
 .category-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px;
-  background: var(--primary-soft); color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--primary-soft);
+  color: var(--primary);
   border-radius: 12px;
 }
-.category-card h3 { font-size: 16px; font-weight: 700; }
-.category-card p { font-size: 13px; color: var(--text-muted); }
 
-@media (max-width: 700px) {
-  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+.category-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.category-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ✅ RESPONSIVE: Sesuaikan jumlah kolom untuk layar lebih kecil */
+@media (max-width: 1200px) {
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom di layar medium */
+  }
+}
+
+@media (max-width: 768px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 kolom di tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-grid {
+    grid-template-columns: 1fr; /* 1 kolom di mobile */
+  }
+  
+  .category-card {
+    padding: 14px;
+  }
+  
+  .category-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .category-card h3 {
+    font-size: 14px;
+  }
+  
+  .category-card p {
+    font-size: 12px;
+  }
 }

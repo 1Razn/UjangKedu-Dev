@@ -6,14 +6,11 @@ import "./Navbar.css";
 export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
+  
+  const [user, setUser] = useState(() => {
     const userStr = localStorage.getItem("user");
-    if (userStr) {
-      setUser(JSON.parse(userStr));
-    }
-  }, []);
+    return userStr ? JSON.parse(userStr) : null;
+  });
 
   const handleLogout = () => {
     if (confirm("Yakin ingin logout?")) {
@@ -46,20 +43,20 @@ export default function Navbar() {
         <div className="navbar-actions">
           {user ? (
             <>
-              <span style={{ fontSize: "14px", marginRight: "12px" }}>
-                👋 {user.nama}
+              <span className="user-greeting hide-sm">
+                <i class="fa-regular fa-user"></i> Halo, {user.nama}
               </span>
               <button 
                 onClick={handleLogout}
-                className="btn btn-ghost hide-sm"
+                className="btn-logout hide-sm"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-ghost hide-sm">Masuk</Link>
-              <Link to="/login" className="btn btn-primary">Daftar</Link>
+              <Link to="/login" className="btn-ghost hide-sm">Masuk</Link>
+              <Link to="/login" className="btn-primary">Daftar</Link>
             </>
           )}
           <button 

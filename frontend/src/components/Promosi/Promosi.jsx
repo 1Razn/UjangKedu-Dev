@@ -32,7 +32,6 @@ export default function Promosi() {
   }, []);
 
   const handleSelectPackage = (selectedPaketId) => {
-    // Langsung navigate ke form pasang iklan dengan paket yang dipilih
     navigate(`/promosi?paketId=${selectedPaketId}`);
   };
 
@@ -93,7 +92,7 @@ export default function Promosi() {
               Pilih paket iklan yang tepat untuk meningkatkan visibilitas properti Anda di BOTY.
             </p>
           </div>
-          <Link to="/" className="btn btn-outline">Lihat Semua Paket</Link>
+          {/* <Link to="/" className="btn btn-outline">Lihat Semua Paket</Link> */}
         </div>
 
         <div className="promo-grid">
@@ -115,9 +114,9 @@ export default function Promosi() {
 
         <div className="cta-card">
           <div className="cta-left">
-            <h3>Ingin tampil lebih cepat?</h3>
+            <h3>Ingin Properti Anda Terjual?</h3>
             <p className="cta-desc">
-              Daftar sebagai agen dan pasang iklan dengan fitur premium agar listing Anda dilihat lebih banyak.
+              Posting iklan sekarang juga!
             </p>
             <div className="cta-buttons">
               <Link to="/promosi" className="btn btn-primary btn-lg">Pasang Iklan</Link>

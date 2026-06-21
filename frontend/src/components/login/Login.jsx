@@ -20,11 +20,9 @@ export default function Login() {
       const response = await login(form.email, form.password);
       
       if (response.success) {
-        // ✅ Simpan token & data user ke localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         
-        // ✅ Redirect berdasarkan role
         if (response.data.user.role === "Admin") {
           navigate("/admin");
         } else {
@@ -45,7 +43,7 @@ export default function Login() {
         <div className="login-left">
           <Link to="/" className="login-brand">
             <span className="brand-light">Booking Tanah</span>
-            <span className="brand-amp">&</span>
+            <span className="brand-amp"> dan </span>
             <br />
             <span className="brand-dark">Property</span>
           </Link>
@@ -54,23 +52,15 @@ export default function Login() {
             Masuk ke akun BOTY Anda untuk melanjutkan.
           </p>
 
-          {/* ✅ Tampilkan error jika ada */}
           {error && (
-            <div style={{
-              backgroundColor: "#fee2e2",
-              color: "#b91c1c",
-              padding: "12px",
-              borderRadius: "8px",
-              marginBottom: "16px",
-              fontSize: "14px",
-              border: "1px solid #fca5a5"
-            }}>
-              ⚠️ {error}
+            <div className="login-error">
+              <i className="fa-solid fa-circle-exclamation"></i> {error}
             </div>
           )}
 
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="login-field">
+              <i className="fa-solid fa-envelope login-field-icon"></i>
               <input
                 type="email"
                 placeholder="Email"
@@ -81,6 +71,7 @@ export default function Login() {
             </div>
 
             <div className="login-field">
+              <i className="fa-solid fa-lock login-field-icon"></i>
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Password"
@@ -94,7 +85,7 @@ export default function Login() {
                 onClick={() => setShowPass(!showPass)}
                 aria-label="Toggle password"
               >
-                {showPass ? "🙈" : "👁️"}
+                <i className={`fa-solid ${showPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
               </button>
             </div>
 
@@ -114,26 +105,14 @@ export default function Login() {
               type="submit" 
               className="login-submit"
               disabled={loading}
-              style={{ opacity: loading ? 0.7 : 1 }}
             >
-              {loading ? "Memproses..." : "Login"}
+              {loading ? (
+                <><i className="fa-solid fa-spinner fa-spin"></i> Memproses...</>
+              ) : (
+                <><i className="fa-solid fa-right-to-bracket"></i> Login</>
+              )}
             </button>
           </form>
-
-          {/* ✅ Info Akun Test */}
-          <div style={{
-            marginTop: "20px",
-            padding: "12px",
-            backgroundColor: "#f0f9ff",
-            borderRadius: "8px",
-            fontSize: "13px",
-            color: "#0369a1",
-            border: "1px solid #bae6fd"
-          }}>
-            <strong> Akun Test:</strong><br />
-            Admin: admin@boty.com / admin123<br />
-            User: user123@gmail.com / user123
-          </div>
 
           <div className="login-footer">
             <p>© Copyright 2026 BOTY</p>

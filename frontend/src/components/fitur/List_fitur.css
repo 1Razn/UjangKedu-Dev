@@ -1,8 +1,7 @@
 /* src/components/fitur/List_fitur.css */
-
 .list-fitur-section {
   padding: 60px 16px;
-  background-color: var(--bg-soft, #f8fafc);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   font-family: inherit;
 }
 
@@ -19,13 +18,13 @@
 .list-fitur-header h2 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text, #0f172a);
+  color: #ffffff;
   margin-bottom: 12px;
 }
 
 .list-fitur-header p {
   font-size: 16px;
-  color: var(--text-muted, #64748b);
+  color: rgba(255, 255, 255, 0.85);
   max-width: 700px;
   margin: 0 auto;
 }
@@ -39,11 +38,11 @@
 
 /* DESAIN KONTEN KARTU FITUR */
 .fitur-card {
-  background: var(--white, #ffffff);
-  border: 1px solid var(--border, #e2e8f0);
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-lg, 12px);
   padding: 32px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -53,15 +52,15 @@
 
 .fitur-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* BUNGKUS IKON SEPERTI DI GAMBAR */
 .fitur-icon-box {
   width: 48px;
   height: 48px;
-  background-color: var(--primary-light, #e0f2fe);
-  color: var(--primary, #2563eb);
+  background-color: #e0f2fe;
+  color: #2563eb;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -71,13 +70,13 @@
 .fitur-card h3 {
   font-size: 18px;
   font-weight: 700;
-  color: var(--text, #1e293b);
+  color: #1e293b;
   margin: 0;
 }
 
 .fitur-card p {
   font-size: 14px;
-  color: var(--text-muted, #64748b);
+  color: #64748b;
   line-height: 1.6;
   margin: 0;
 }
@@ -92,5 +91,13 @@
 @media (max-width: 640px) {
   .list-fitur-grid {
     grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .list-fitur-section {
+    padding: 40px 16px;
+  }
+  
+  .list-fitur-header h2 {
+    font-size: 24px;
   }
 }

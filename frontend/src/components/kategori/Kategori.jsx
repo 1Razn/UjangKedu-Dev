@@ -3,36 +3,68 @@ import http from "../../utils/http";
 import "./Kategori.css";
 
 const FALLBACK_CATEGORIES = [
-  { id: 1, label: "Rumah", count: "12.450 listing" },
-  { id: 2, label: "Apartemen", count: "5.230 listing" },
-  { id: 3, label: "Tanah", count: "8.920 listing" },
-  { id: 4, label: "Komersial", count: "3.140 listing" },
+  { id: 1, label: "Rumah", count: "0 listing", icon: "fa-house" },
+  { id: 2, label: "Apartemen", count: "0 listing", icon: "fa-building" },
+  { id: 3, label: "Tanah", count: "0 listing", icon: "fa-layer-group" },
+  { id: 4, label: "Ruko", count: "0 listing", icon: "fa-store" },
+  { id: 5, label: "Kost", count: "0 listing", icon: "fa-bed" },
 ];
-
-function randomCount() {
-  return `${Math.floor(Math.random() * 300 + 50)} listing`;
-}
 
 export default function Categories({ selectedCategory, onSelectCategory }) {
   const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    http.get("/kategori")
-      .then((response) => {
-        if (response.data && Array.isArray(response.data.data) && response.data.data.length > 0) {
-          const mapped = response.data.data.map((item) => ({
+    async function fetchCategories() {
+      try {
+        setLoading(true);
+        
+        // 1. Fetch kategori dari database
+        const kategoriRes = await http.get("/kategori");
+        const kategoriData = kategoriRes.data?.data || [];
+
+        // 2. Fetch semua properti untuk menghitung listing per kategori
+        const propertiRes = await http.get("/properti");
+        const propertiData = propertiRes.data?.data || [];
+
+        // 3. Hitung jumlah properti per kategori_properti_id
+        const countMap = {};
+        propertiData.forEach((p) => {
+          const katId = p.kategori_properti_id;
+          if (katId) {
+            countMap[katId] = (countMap[katId] || 0) + 1;
+          }
+        });
+
+        // 4. Mapping kategori dengan icon dan jumlah listing real
+        const iconMap = {
+          1: "fa-house",
+          2: "fa-building",
+          3: "fa-layer-group",
+          4: "fa-store",
+          5: "fa-bed"
+        };
+
+        if (kategoriData.length > 0) {
+          const mapped = kategoriData.map((item) => ({
             id: item.id,
             label: item.nama_kategori,
-            count: randomCount(),
+            count: `${countMap[item.id] || 0} listing`,
+            icon: iconMap[item.id] || "fa-house"
           }));
           setCategories(mapped);
+        } else {
+          setCategories(FALLBACK_CATEGORIES);
         }
-      })
-      .catch(() => {
-        // keep fallback categories
-      })
-      .finally(() => setLoading(false));
+      } catch (err) {
+        console.error("Gagal memuat kategori:", err);
+        setCategories(FALLBACK_CATEGORIES);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCategories();
   }, []);
 
   const handleSelect = (label) => {
@@ -58,7 +90,9 @@ export default function Categories({ selectedCategory, onSelectCategory }) {
                 type="button"
                 onClick={() => handleSelect(category.label)}
               >
-                <div className="category-icon"></div>
+                <div className="category-icon">
+                  <i className={`fa-solid ${category.icon}`}></i>
+                </div>
                 <div>
                   <h3>{category.label}</h3>
                   <p>{category.count}</p>
@@ -66,7 +100,7 @@ export default function Categories({ selectedCategory, onSelectCategory }) {
               </button>
             );
           })}
-          {loading && <p className="loading-text">Memuat kategori...</p>}
+          {loading && <p className="loading-text">Memuat kategori... ⏳</p>}
         </div>
       </div>
     </section>

@@ -15,15 +15,12 @@ export default function Featured({ selectedCategory, onClearCategory }) {
       try {
         setLoading(true);
         
-        // Fetch properti
         const propertiResponse = await http.get("/properti");
         const rawData = propertiResponse.data.data || propertiResponse.data;
         
-        // Fetch kategori dari database
         const kategoriResponse = await getCategories();
         const kategoriData = Array.isArray(kategoriResponse) ? kategoriResponse : [];
         
-        // Buat mapping kategori ID ke nama
         const kategoriMap = {};
         kategoriData.forEach(kat => {
           kategoriMap[kat.id] = kat.nama_kategori;
@@ -36,8 +33,6 @@ export default function Featured({ selectedCategory, onClearCategory }) {
           price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : "Harga tidak tersedia",
           location: item.alamat || "Lokasi belum diatur",
           type: item.tipe || "Jual",
-          bedrooms: item.kamar_tidur || "-",
-          bathrooms: item.kamar_mandi || "-",
           area: item.luas_properti || 0,
           image: item.foto_properti || "https://placehold.co/600x400?text=Gambar+Properti",
           featured: item.featured == 1 || item.featured === true,

@@ -2,49 +2,178 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+  /* ✅ Gradient SAMA PERSIS dengan hero */
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  /* ✅ Hapus border agar seamless dengan hero */
+  border-bottom: none;
 }
+
 .navbar-inner {
   display: flex;
   align-items: center;
   gap: 24px;
   height: 68px;
 }
-.navbar-logo { display: flex; align-items: center; gap: 10px; }
+
+.navbar-logo { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
 .navbar-logo-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  background: var(--primary); color: var(--white);
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  width: 38px; 
+  height: 38px;
+  /* ✅ Icon box putih transparan agar terlihat di background biru */
+  background: rgba(255, 255, 255, 0.2); 
+  color: white;
   border-radius: 10px;
+  backdrop-filter: blur(10px);
 }
+
 .navbar-logo-text {
-  font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px;
+  font-size: 22px; 
+  font-weight: 800; 
+  color: white; 
+  letter-spacing: -0.5px;
 }
-.navbar-links { display: flex; gap: 24px; margin-left: 16px; }
+
+.navbar-links { 
+  display: flex; 
+  gap: 24px; 
+  margin-left: 16px; 
+}
+
 .navbar-link {
-  font-size: 14px; font-weight: 500; color: #334155;
-  padding: 6px 0; transition: color 0.15s;
+  font-size: 14px; 
+  font-weight: 500; 
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  text-decoration: none;
 }
-.navbar-link:hover { color: var(--primary); }
-.navbar-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+.navbar-link:hover { 
+  color: white; 
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.navbar-actions { 
+  margin-left: auto; 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
+
 .icon-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px; border-radius: 8px; color: #475569;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  width: 38px; 
+  height: 38px; 
+  border-radius: 8px; 
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+  border: none;
+  cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
-.icon-btn:hover { background: var(--primary-soft); color: var(--primary); }
+
+.icon-btn:hover { 
+  background: rgba(255, 255, 255, 0.15); 
+  color: white; 
+}
+
+/* Tombol Masuk (ghost) */
+.btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Tombol Daftar / Pasang Iklan (primary - putih) */
+.btn-primary {
+  background: white;
+  color: #1e40af;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tombol Logout */
+.btn-logout {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* User greeting */
+.user-greeting {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .show-sm { display: none; }
 
 @media (max-width: 860px) {
   .navbar-links {
-    display: none; position: absolute; top: 68px; left: 0; right: 0;
-    background: var(--white); flex-direction: column; gap: 0;
-    border-bottom: 1px solid var(--border); padding: 8px 20px;
+    display: none; 
+    position: absolute; 
+    top: 68px; 
+    left: 0; 
+    right: 0;
+    /* ✅ Mobile menu juga biru */
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    flex-direction: column; 
+    gap: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 8px 20px;
   }
   .navbar-links.open { display: flex; }
-  .navbar-link { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .navbar-link { 
+    padding: 12px 0; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+  }
   .navbar-link:last-child { border-bottom: none; }
   .hide-sm { display: none; }
   .show-sm { display: inline-flex; }

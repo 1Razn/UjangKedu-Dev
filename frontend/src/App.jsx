@@ -8,13 +8,13 @@ import ListFitur from "./components/fitur/List_fitur.jsx";
 import Promosi from "./components/promosi/Promosi.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import AdminPage from "./components/admin/AdminPage.jsx";
-import UserForm from "./components/admin/UserForm.jsx"; // ✅ Tambahkan import ini
+import UserForm from "./components/admin/UserForm.jsx";
 import PropertyDetail from "./components/property/PropertyDetail.jsx";
 import SearchResults from "./components/search/SearchResults.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
 import Login from "./components/login/Login.jsx";
 import Laporan from "./components/laporan/Laporan.jsx";
-import PropertySearch from "./components/property/PropertySearch.jsx"; // ✅ Import halaman pencarian buatanmu
+import PropertySearch from "./components/property/PropertySearch.jsx"; 
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
