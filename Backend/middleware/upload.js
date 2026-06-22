@@ -15,8 +15,11 @@ const createStorage = (subfolder) => {
         destination: (req, file, cb) => cb(null, dest),
         filename: (req, file, cb) => {
             const ext = path.extname(file.originalname).toLowerCase();
-            const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`;
-            cb(null, uniqueName);
+            const safeName = path.basename(file.originalname, ext)
+                .replace(/[^a-zA-Z0-9]/g, '-') // Ganti karakter spesial dengan -
+                .toLowerCase();
+            const finalName = `${safeName}${ext}`;
+            cb(null, finalName);
         }
     });
 };

@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <a href="#" className="navbar-logo">
-              <span className="navbar-logo-icon"></span>
+              <span className="navbar-logo-icon"><img src="../../../public/logo.png" alt="Logo" /></span>
               <span className="navbar-logo-text">BOTY</span>
             </a>
             <p>Booking Tanah dan Property — platform jual, sewa & booking properti terpercaya di Indonesia.</p>

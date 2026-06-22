@@ -1,20 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import http from "../../utils/http.js";
+import "./PropertyCard.css";
 
 export default function PropertyCard({ p }) {
-  const [liked, setLiked] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistId, setWishlistId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const toggleLike = (e) => {
+  // Cek status wishlist saat component mount
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await http.get(`/wishlist/check/${p.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        setIsWishlisted(response.data.data?.isWishlisted || false);
+        setWishlistId(response.data.data?.wishlistId || null);
+      } catch (error) {
+        console.error('Error checking wishlist status:', error);
+      }
+    };
+
+    checkWishlistStatus();
+  }, [p.id]);
+
+  const toggleWishlist = async (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Mencegah klik like membuka detail properti
-    setLiked(!liked);
+    e.stopPropagation();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Silakan login untuk menambahkan ke wishlist');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (isWishlisted) {
+        // Hapus dari wishlist
+        if (wishlistId) {
+          await http.delete(`/wishlist/${wishlistId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        }
+        setIsWishlisted(false);
+        setWishlistId(null);
+      } else {
+        // Tambah ke wishlist
+        const response = await http.post('/wishlist',
+          { properti_id: p.id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        
+        if (response.data.success) {
+          setIsWishlisted(true);
+          setWishlistId(response.data.wishlistId);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+      alert('Terjadi kesalahan, silakan coba lagi');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReportClick = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Mencegah klik lapor membuka detail properti
-    // ✅ Navigasi ke halaman laporan dengan membawa ID dan Nama Properti
+    e.stopPropagation();
     navigate(`/laporan?properti_id=${p.id}&nama_properti=${encodeURIComponent(p.title || "Properti Tanpa Nama")}`);
   };
 
@@ -26,64 +96,48 @@ export default function PropertyCard({ p }) {
           <span className="badge badge-primary">{p.type}</span>
           {p.featured && <span className="badge badge-warning">Featured</span>}
         </div>
+        
         <button
-          className={`property-like ${liked ? "liked" : ""}`}
-          onClick={toggleLike}
+          className={`property-like ${isWishlisted ? "liked" : ""} ${loading ? "loading" : ""}`}
+          onClick={toggleWishlist}
           aria-label="Wishlist"
-        ></button>
+          disabled={loading}
+        >
+          {loading ? (
+            <i className="fa-solid fa-spinner fa-spin"></i>
+          ) : isWishlisted ? (
+            <i className="fa-solid fa-heart"></i>
+          ) : (
+            <i className="fa-regular fa-heart"></i>
+          )}
+        </button>
       </div>
-  
+
       <div className="property-body">
         <p className="property-price">{p.price}</p>
         <h3 className="property-title">{p.title}</h3>
         <p className="property-location">{p.location}</p>
-      
+
         <div className="property-specs">
           {p.bedrooms !== undefined && <span>{p.bedrooms}</span>}
           {p.bathrooms !== undefined && <span>{p.bathrooms}</span>}
           <span className="property-area">{p.area} m²</span>
         </div>
 
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
-          alignItems: "center", 
-          marginTop: "12px",
-          paddingTop: "8px",
-          borderTop: "1px solid #f0f0f0" 
-        }}>
+        <div className="property-card-footer">
           {p.agent && (
-            <div className="property-agent" style={{ margin: 0 }}>
-              {p.agent}
+            <div className="property-agent">
+              <i className="fa-solid fa-user"></i> {p.agent}
             </div>
           )}
 
-          {/* ✅ Tombol Lapor menggunakan BUTTON, bukan Link */}
           <button
             type="button"
+            className="property-report-btn"
             onClick={handleReportClick}
             title="Laporkan Properti Ini"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              backgroundColor: "#ff4d4f", 
-              color: "white", 
-              padding: "4px 10px",
-              borderRadius: "4px",
-              border: "none",
-              fontSize: "12px",
-              fontWeight: "bold",
-              boxShadow: "0 2px 4px rgba(255, 77, 79, 0.3)",
-              cursor: "pointer",
-              transition: "background 0.2s",
-              zIndex: 10
-            }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#d9363e"} 
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#ff4d4f"}
           >
-            🏳️ Lapor
+            <i className="fa-solid fa-flag"></i> Lapor
           </button>
         </div>
       </div>

@@ -20,21 +20,19 @@ export default function Navbar() {
     }
   };
 
-  const links = ["Jual", "Sewa", "Booking Tanah"];
 
   return (
     <header className="navbar">
       <div className="container navbar-inner">
         <Link to="/" className="navbar-logo">
-          <span className="navbar-logo-icon"></span>
+          <span className="navbar-logo-icon"><img src="../../../public/logo.png" alt="Logo" /></span>
           <span className="navbar-logo-text">BOTY</span>
         </Link>
         
         <nav className={`navbar-links ${open ? "open" : ""}`}>
-          {links.map((l) => (
-            <a key={l} href="#" className="navbar-link">{l}</a>
-          ))}
+          <Link to="/wishlist" className="navbar-link">Wishlist</Link>
           <Link to="/laporan" className="navbar-link">Laporan</Link>
+          <Link to="/profile" className="navbar-link">Profile</Link>
           {user?.role === "Admin" && (
             <Link to="/admin" className="navbar-link">Admin</Link>
           )}
@@ -44,7 +42,7 @@ export default function Navbar() {
           {user ? (
             <>
               <span className="user-greeting hide-sm">
-                <i class="fa-regular fa-user"></i> Halo, {user.nama}
+                <i className="fa-regular fa-user"></i> Halo, {user.nama}
               </span>
               <button 
                 onClick={handleLogout}

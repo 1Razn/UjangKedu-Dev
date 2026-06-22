@@ -44,11 +44,11 @@ router.get("/komentar/:id", KomentarController.show);
 router.post("/komentar", KomentarController.store);
 router.delete("/komentar/:id", authenticateToken, KomentarController.destroy);
 
-
 router.get("/wishlist", authenticateToken, WishlistController.index);
 router.get("/wishlist/:id", authenticateToken, WishlistController.show);
 router.post("/wishlist", authenticateToken, WishlistController.store);
 router.delete("/wishlist/:id", authenticateToken, WishlistController.destroy);
+router.get("/wishlist/check/:properti_id", authenticateToken, WishlistController.checkStatus);
 
 router.get("/laporan", authenticateToken, authorize('Admin'), LaporanController.index);
 router.get("/laporan/:id", authenticateToken, LaporanController.show);

@@ -10,11 +10,12 @@ import Footer from "./components/footer/Footer.jsx";
 import AdminPage from "./components/admin/AdminPage.jsx";
 import UserForm from "./components/admin/UserForm.jsx";
 import PropertyDetail from "./components/property/PropertyDetail.jsx";
-import SearchResults from "./components/search/SearchResults.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
 import Login from "./components/login/Login.jsx";
 import Laporan from "./components/laporan/Laporan.jsx";
 import PropertySearch from "./components/property/PropertySearch.jsx"; 
+import Wishlist from './components/wishlist/wishlist.jsx';
+import Profile from "./components/profile/profile.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -54,15 +55,17 @@ export default function App() {
       
       {/* ✅ Route Admin */}
       <Route path="/admin" element={<AdminPage />} />
-      <Route path="/admin/user/edit/:id" element={<UserForm />} /> {/* ✅ Tambahkan ini */}
-      <Route path="/admin/user/add" element={<UserForm />} /> {/* ✅ Tambahkan ini */}
+      <Route path="/admin/user/edit/:id" element={<UserForm />} />
+      <Route path="/admin/user/add" element={<UserForm />} /> 
       
       <Route path="/login" element={<Login />} />
       <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
-      <Route path="/search" element={<WithChrome><SearchResults /></WithChrome>} />
       <Route path="/laporan" element={<WithChrome><Laporan /></WithChrome>} />
+
+      <Route path="/profile" element={<WithChrome><Profile /></WithChrome>} />
       
-      {/* ✅ Rute halaman khusus pencarian filter huruf awal milikmu */}
+      <Route path="/wishlist" element={<WithChrome><Wishlist /></WithChrome>} />
+
       <Route path="/search-custom" element={<WithChrome><PropertySearch /></WithChrome>} />
     </Routes>
   );

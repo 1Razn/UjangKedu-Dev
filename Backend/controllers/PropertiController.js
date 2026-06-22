@@ -3,7 +3,7 @@ const { validateCreateProperti, validateUpdateProperti, validateId } = require('
 const errorHandler = require('../utils/errorHandler');
 const path = require('path');
 const fs = require('fs');
-const db = require('../config/database'); // Sesuaikan jika lokasi database config kamu beda
+const db = require('../config/database');
 
 class PropertiController {
   index(req, res) {
@@ -21,8 +21,8 @@ class PropertiController {
         p.paket_iklan_id, 
         p.user_id, 
         p.foto_properti,
-        k.nama_kategori AS category,  /* Ini kuncinya! */
-        u.nama AS agent_name          /* Mengambil nama agen dari tabel user */
+        k.nama_kategori AS category,
+        u.nama AS agent_name
       FROM properti p
       LEFT JOIN kategori_properti k ON p.kategori_properti_id = k.id
       LEFT JOIN user u ON p.user_id = u.id
@@ -78,7 +78,7 @@ class PropertiController {
 
     const newProperti = { ...req.body };
     if (req.file) {
-      newProperti.foto_properti = `uploads/properti/${req.file.filename}`;
+      newProperti.foto_properti = req.file.filename; 
     }
 
     Properti.create(newProperti, (err, result) => {
@@ -119,7 +119,8 @@ class PropertiController {
 
       const oldFoto = oldResult[0].foto_properti;
       const updateData = { ...req.body };
-      updateData.foto_properti = req.file ? `uploads/properti/${req.file.filename}` : oldFoto;
+      // ✅ Simpan HANYA nama file (bukan path lengkap)
+      updateData.foto_properti = req.file ? req.file.filename : oldFoto;
 
       Properti.update(req.params.id, updateData, (err, result) => {
         if (err) {
@@ -132,7 +133,7 @@ class PropertiController {
         }
 
         if (req.file && oldFoto) {
-          const oldFilePath = path.join(__dirname, '..', oldFoto);
+          const oldFilePath = path.join(__dirname, '../uploads/properti', oldFoto);
           if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
         }
 

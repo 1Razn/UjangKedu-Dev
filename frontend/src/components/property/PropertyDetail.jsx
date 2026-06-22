@@ -29,7 +29,6 @@ export default function PropertyDetail() {
     }
   }, [id]);
 
-  // Loading state
   if (loading) {
     return (
       <div className="detail-page">
@@ -41,7 +40,6 @@ export default function PropertyDetail() {
     );
   }
 
-  // Error state
   if (error || !property) {
     return (
       <div className="detail-notfound">
@@ -56,7 +54,6 @@ export default function PropertyDetail() {
 
   return (
     <div className="detail-page">
-      {/* ✅ Tombol Kembali di atas dengan jarak */}
       <div className="container detail-top">
         <Link to="/" className="detail-back">
           <i className="fa-solid fa-arrow-left"></i> Kembali
@@ -65,10 +62,9 @@ export default function PropertyDetail() {
 
       <div className="container detail-grid">
         <div className="detail-main">
-          {/* Gallery */}
           <div className="detail-gallery">
             <div className="detail-gallery-main">
-              <img src={gallery[active]} alt={property.title} />
+              <img src={property.image} alt={property.title} />
               <div className="detail-badges">
                 <span className="badge badge-primary">{property.type}</span>
                 {property.featured && <span className="badge badge-warning">Featured</span>}
@@ -103,6 +99,7 @@ export default function PropertyDetail() {
             {property.area && (
               <div className="detail-spec">
                 <div>
+                  <i className="fa-solid fa-ruler-combined"></i>
                   <strong>{property.area} m²</strong>
                   <span>Luas Properti</span>
                 </div>
@@ -126,7 +123,38 @@ export default function PropertyDetail() {
             <div className="detail-info-grid">
               {property.luas_tanah && (
                 <div className="detail-info-item">
+                  <i className="fa-solid fa-expand"></i>
                   <strong>Luas Tanah:</strong> {property.luas_tanah} m²
+                </div>
+              )}
+              {property.luas_bangunan && (
+                <div className="detail-info-item">
+                  <i className="fa-solid fa-building"></i>
+                  <strong>Luas Bangunan:</strong> {property.luas_bangunan} m²
+                </div>
+              )}
+              {property.jumlah_lantai && (
+                <div className="detail-info-item">
+                  <i className="fa-solid fa-layer-group"></i>
+                  <strong>Jumlah Lantai:</strong> {property.jumlah_lantai} Lantai
+                </div>
+              )}
+              {property.daya_listrik && (
+                <div className="detail-info-item">
+                  <i className="fa-solid fa-bolt"></i>
+                  <strong>Daya Listrik:</strong> {property.daya_listrik} Watt
+                </div>
+              )}
+              {property.garasi && (
+                <div className="detail-info-item">
+                  <i className="fa-solid fa-car"></i>
+                  <strong>Garasi / Carport:</strong> {property.garasi} Mobil
+                </div>
+              )}
+              {property.certificate && (
+                <div className="detail-info-item">
+                  <i className="fa-solid fa-certificate"></i>
+                  <strong>Sertifikat:</strong> {property.certificate}
                 </div>
               )}
             </div>

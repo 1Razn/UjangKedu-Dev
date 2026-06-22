@@ -239,7 +239,7 @@ export default function PromosiPage() {
                     onChange={(e) => handleInput("judul", e.target.value)}
                     placeholder="Contoh: Rumah Minimalis 2 Lantai"
                     required
-                    maxLength="20"
+                    maxLength="100"
                   />
                 </label>
 

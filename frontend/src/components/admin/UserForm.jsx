@@ -7,7 +7,6 @@ export default function UserForm({ userId, onCancel, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
@@ -28,18 +27,20 @@ export default function UserForm({ userId, onCancel, onSuccess }) {
       setLoading(true);
       const userData = await getUserById(userId);
       setFormData({
-        nama: userData.nama || "",
-        email: userData.email || "",
-        no_hp: userData.no_hp || "",
-        password: "",
-        role: userData.role || "User",
+        nama: userData.nama || '',
+        email: userData.email || '',
+        no_hp: userData.no_hp || '',
+        password: '',
+        role: userData.role || 'User',
         foto_profil: null
       });
+
+      // ✅ Hanya gunakan nama file saja, tanpa base URL
       if (userData.foto_profil) {
-        setPreviewImage(`http://localhost:3000/${userData.foto_profil}`);
+        setPreviewImage(userData.foto_profil);
       }
     } catch (err) {
-      setError("Gagal memuat data user");
+      setError('Gagal memuat data user');
       console.error(err);
     } finally {
       setLoading(false);
