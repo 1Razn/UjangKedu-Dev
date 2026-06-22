@@ -8,7 +8,9 @@ export default function KomentarList({ propertiId }) {
   const [error, setError] = useState(null);
   
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [formData, setFormData] = useState({ nama: "", isi_komentar: "" });
+  const [formData, setFormData] = useState({ isi_komentar: "" });
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const fetchKomentarData = async () => {
     try {
@@ -36,21 +38,25 @@ export default function KomentarList({ propertiId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.isi_komentar) return;
+    if (!formData.isi_komentar || !token) return; 
 
     setSubmitLoading(true);
     try {
       await http.post("/komentar", {
         properti_id: propertiId,
         komentar: formData.isi_komentar,
-        user_id: 1 
+        user_id: user.id 
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       
-      setFormData({ nama: "", isi_komentar: "" });
+      setFormData({ isi_komentar: "" }); 
       fetchKomentarData(); 
     } catch (err) {
       console.error(err);
-      alert("Gagal mengirim komentar.");
+      alert("Gagal mengirim komentar. Sesi mungkin telah habis.");
     } finally {
       setSubmitLoading(false);
     }
@@ -64,15 +70,8 @@ export default function KomentarList({ propertiId }) {
       <h3 className="komentar-title">
         Komentar Properti {komentar.length > 0 && `(${komentar.length})`}
       </h3>
-      {propertiId && (
+      {propertiId && token ? (
         <form onSubmit={handleSubmit} className="komentar-form">
-          <input
-            type="text"
-            placeholder="Nama (Opsional / Anonim)"
-            value={formData.nama}
-            onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-            disabled={submitLoading}
-          />
           <textarea
             placeholder="Tulis pertanyaan atau komentar..."
             rows="3"
@@ -85,7 +84,14 @@ export default function KomentarList({ propertiId }) {
             {submitLoading ? "Mengirim..." : "Kirim Komentar"}
           </button>
         </form>
-      )}
+      ) : propertiId && !token ? (
+        <div style={{ textAlign: "center", padding: "15px", background: "#f1f5f9", borderRadius: "8px", marginBottom: "20px" }}>
+          {/* Jika belum login, tampilkan pesan ini */}
+          <p style={{ margin: 0, fontSize: "14px", color: "#475569" }}>
+            Silakan <strong>Login</strong> terlebih dahulu untuk menulis komentar.
+          </p>
+        </div>
+      ) : null}
 
       <div className="komentar-list">
         {komentar.length === 0 ? (
@@ -94,7 +100,9 @@ export default function KomentarList({ propertiId }) {
           komentar.map((item) => (
             <div key={item.id} className="komentar-item">
               <div className="komentar-header">
-                <span className="komentar-name">User ID: {item.user_id} </span>
+                <span className="komentar-name">
+                  {item.nama_user || item.nama || `User ID: ${item.user_id}`}
+                  </span>
               </div>
               <p className="komentar-text">
                 {item.komentar}
