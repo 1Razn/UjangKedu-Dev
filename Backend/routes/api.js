@@ -33,6 +33,7 @@ router.get('/', (req, res) => {
     res.send("Hello Express");
 });
 
+
 router.get("/user", authenticateToken, authorize('Admin'), UserController.index);
 router.get("/user/:id", authenticateToken, UserController.show);
 router.post('/user', upload.profile.single('foto_profil'), UserController.store);
@@ -50,7 +51,7 @@ router.post("/wishlist", authenticateToken, WishlistController.store);
 router.delete("/wishlist/:id", authenticateToken, WishlistController.destroy);
 router.get("/wishlist/check/:properti_id", authenticateToken, WishlistController.checkStatus);
 
-router.get("/laporan", authenticateToken, authorize('Admin'), LaporanController.index);
+router.get("/laporan", authenticateToken, LaporanController.index);
 router.get("/laporan/:id", authenticateToken, LaporanController.show);
 router.post("/laporan", authenticateToken, LaporanController.store);
 router.delete("/laporan/:id", authenticateToken, authorize('Admin'), LaporanController.destroy);
