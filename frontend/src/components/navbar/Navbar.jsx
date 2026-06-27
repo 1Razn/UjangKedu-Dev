@@ -6,29 +6,45 @@ import "./Navbar.css";
 export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  
   const [user, setUser] = useState(() => {
     const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   });
 
-  const handleLogout = () => {
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const userStr = localStorage.getItem("user");
+      setUser(userStr ? JSON.parse(userStr) : null);
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  const handleLogout = async () => {
     if (confirm("Yakin ingin logout?")) {
-      logout();
-      setUser(null);
-      navigate("/");
+      try {
+        await logout();
+      } catch (error) {
+        console.error("Logout error:", error);
+      } finally {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/", { replace: true });
+      }
     }
   };
-
 
   return (
     <header className="navbar">
       <div className="container navbar-inner">
         <Link to="/" className="navbar-logo">
-          <span className="navbar-logo-icon"><img src="../../../public/logo.png" alt="Logo" /></span>
+          <span className="navbar-logo-icon">
+            <img src="../../../public/logo.png" alt="Logo" />
+          </span>
           <span className="navbar-logo-text">BOTY</span>
         </Link>
-        
+
         <nav className={`navbar-links ${open ? "open" : ""}`}>
           <Link to="/wishlist" className="navbar-link">Wishlist</Link>
           <Link to="/laporan" className="navbar-link">Laporan</Link>
@@ -53,6 +69,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
+              {/* ✅ Gunakan Link ke /login */}
               <Link to="/login" className="btn-ghost hide-sm">Masuk</Link>
               <Link to="/login" className="btn-primary">Daftar</Link>
             </>

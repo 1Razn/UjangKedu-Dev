@@ -13,12 +13,14 @@ import PropertyDetail from "./components/property/PropertyDetail.jsx";
 import PromosiPage from "./components/property/FormProperty.jsx";
 import Login from "./components/login/Login.jsx";
 import Laporan from "./components/laporan/Laporan.jsx";
-import PropertySearch from "./components/property/PropertySearch.jsx"; 
+import PropertySearch from "./components/property/PropertySearch.jsx";
 import Wishlist from './components/wishlist/wishlist.jsx';
 import Profile from "./components/profile/profile.jsx";
+import Register from "./components/register/Register.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
+
   return (
     <div className="app">
       <Navbar />
@@ -52,20 +54,18 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/promosi" element={<PromosiPage />} />
-      
-      {/* ✅ Route Admin */}
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/admin/user/edit/:id" element={<UserForm />} />
-      <Route path="/admin/user/add" element={<UserForm />} /> 
+      <Route path="/admin/user/add" element={<UserForm />} />
+      <Route path="/register" element={<Register />} />
       
+      {/* ✅ Tambahkan route login terpisah */}
       <Route path="/login" element={<Login />} />
+      
       <Route path="/property/:id" element={<WithChrome><PropertyDetail /></WithChrome>} />
       <Route path="/laporan" element={<WithChrome><Laporan /></WithChrome>} />
-
       <Route path="/profile" element={<WithChrome><Profile /></WithChrome>} />
-      
       <Route path="/wishlist" element={<WithChrome><Wishlist /></WithChrome>} />
-
       <Route path="/search-custom" element={<WithChrome><PropertySearch /></WithChrome>} />
     </Routes>
   );

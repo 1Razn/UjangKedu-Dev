@@ -68,7 +68,7 @@ export default function Featured({ selectedCategory, onClearCategory }) {
             <h2 className="section-title">Properti Unggulan</h2>
             <p className="section-subtitle">Pilihan terbaik untuk Anda</p>
           </div>
-          <a href="#" className="btn btn-outline">Lihat Semua</a>
+          <a href="/search-custom" className="btn btn-outline">Lihat Semua</a>
         </div>
         
         {selectedCategory && selectedCategory !== "Semua" && (

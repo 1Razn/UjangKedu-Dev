@@ -16,6 +16,7 @@ export default function PropertyDetail() {
       try {
         setLoading(true);
         const data = await getPropertyByIdApi(id);
+        console.log("🔍 Data property dari API:", data);
         setProperty(data);
       } catch (err) {
         console.error("Gagal memuat detail properti:", err);
@@ -52,6 +53,22 @@ export default function PropertyDetail() {
 
   const gallery = property.gallery && property.gallery.length ? property.gallery : [property.image];
 
+  const formatWhatsAppNumber = (phone) => {
+    if (!phone) return "";
+
+    let cleaned = phone.replace(/\D/g, "");
+
+    if (cleaned.startsWith("0")) {
+      cleaned = "62" + cleaned.substring(1);
+    }
+
+    if (!cleaned.startsWith("62") && cleaned.length === 10) {
+      cleaned = "62" + cleaned;
+    }
+
+    return cleaned;
+  };
+
   return (
     <div className="detail-page">
       <div className="container detail-top">
@@ -85,7 +102,6 @@ export default function PropertyDetail() {
             )}
           </div>
 
-          {/* Info Dasar */}
           <div className="detail-block">
             <p className="detail-price">{property.price}</p>
             <h1 className="detail-title">{property.title}</h1>
@@ -94,7 +110,6 @@ export default function PropertyDetail() {
             </p>
           </div>
 
-          {/* Spesifikasi */}
           <div className="detail-specs">
             {property.area && (
               <div className="detail-spec">
@@ -123,38 +138,7 @@ export default function PropertyDetail() {
             <div className="detail-info-grid">
               {property.luas_tanah && (
                 <div className="detail-info-item">
-                  <i className="fa-solid fa-expand"></i>
                   <strong>Luas Tanah:</strong> {property.luas_tanah} m²
-                </div>
-              )}
-              {property.luas_bangunan && (
-                <div className="detail-info-item">
-                  <i className="fa-solid fa-building"></i>
-                  <strong>Luas Bangunan:</strong> {property.luas_bangunan} m²
-                </div>
-              )}
-              {property.jumlah_lantai && (
-                <div className="detail-info-item">
-                  <i className="fa-solid fa-layer-group"></i>
-                  <strong>Jumlah Lantai:</strong> {property.jumlah_lantai} Lantai
-                </div>
-              )}
-              {property.daya_listrik && (
-                <div className="detail-info-item">
-                  <i className="fa-solid fa-bolt"></i>
-                  <strong>Daya Listrik:</strong> {property.daya_listrik} Watt
-                </div>
-              )}
-              {property.garasi && (
-                <div className="detail-info-item">
-                  <i className="fa-solid fa-car"></i>
-                  <strong>Garasi / Carport:</strong> {property.garasi} Mobil
-                </div>
-              )}
-              {property.certificate && (
-                <div className="detail-info-item">
-                  <i className="fa-solid fa-certificate"></i>
-                  <strong>Sertifikat:</strong> {property.certificate}
                 </div>
               )}
             </div>
@@ -194,7 +178,6 @@ export default function PropertyDetail() {
           )}
         </div>
 
-        {/* Sidebar Agen */}
         <aside className="detail-aside">
           <div className="detail-agent-card">
             <div className="detail-agent-head">
@@ -204,17 +187,41 @@ export default function PropertyDetail() {
               <div>
                 <p className="detail-agent-name">{property.agent || "Agen"}</p>
                 <span className="detail-agent-role">
-                  <i className="fa-solid fa-shield-check"></i> Agen Terverifikasi
+                  <i className="fa-solid fa-shield-check"></i>Terverifikasi
                 </span>
               </div>
             </div>
             <p className="detail-agent-price">{property.price}</p>
-            <button className="btn btn-primary detail-agent-btn">
-              <i className="fa-solid fa-phone"></i> Hubungi Agen
-            </button>
-            <button className="btn btn-outline detail-agent-btn">
-              <i className="fa-solid fa-envelope"></i> Kirim Pesan
-            </button>
+
+            {/* Tombol Hubungi Penjual - WhatsApp */}
+            {property.no_hp && (
+              <a
+                className="btn btn-primary detail-agent-btn"
+                href={`https://wa.me/${formatWhatsAppNumber(property.no_hp)}?text=${encodeURIComponent(
+                  `Halo, saya tertarik dengan properti "${property.title}" yang Anda iklankan di BOTY. Apakah masih tersedia?`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="fa-brands fa-whatsapp"></i> Hubungi Penjual
+              </a>
+            )}
+
+            {/* Tombol Kirim Pesan - Email (Gmail) */}
+            {(property.agent_email || property.user_email || property.email) && (
+              <a
+                className="btn btn-outline detail-agent-btn"
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${property.agent_email || property.user_email || property.email}&su=${encodeURIComponent(
+                  `Pertanyaan tentang ${property.title}`
+                )}&body=${encodeURIComponent(
+                  `Halo,\n\nSaya tertarik dengan properti "${property.title}" yang Anda iklankan di BOTY.\n\nMohon informasi lebih lanjut.\n\nTerima kasih.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="fa-solid fa-envelope"></i> Kirim Pesan
+              </a>
+            )}
           </div>
           <KomentarList propertiId={property.id} />
         </aside>

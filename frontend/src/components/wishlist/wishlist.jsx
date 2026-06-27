@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import http from '../../utils/http.js';
-import './Wishlist.css';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import http from "../../utils/http.js";
+import "./wishlist.css";
 
 export default function Wishlist() {
+	const navigate = useNavigate();
 	const [wishlistItems, setWishlistItems] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		fetchWishlist();
-	}, []);
 
 	const fetchWishlist = async () => {
 		try {
@@ -35,26 +31,23 @@ export default function Wishlist() {
 
 			const rawData = response.data.data || response.data;
 
-			// ✅ Map data dengan field yang benar (tanpa tipe)
 			const mappedData = Array.isArray(rawData) ? rawData.map(item => ({
 				wishlistId: item.wishlist_id || item.id,
 				id: item.properti_id,
 				title: item.judul || 'Properti Tanpa Nama',
 				price: item.harga ? `Rp ${Number(item.harga).toLocaleString('id-ID')}` : 'Hubungi Kami',
 				location: item.alamat || 'Lokasi belum diatur',
-				type: 'Jual', // ✅ Hardcode karena tidak ada di database
+				type: 'Jual',
 				area: item.luas_properti || 0,
 				image: item.foto_properti || 'https://placehold.co/600x400?text=Gambar+Properti',
 				category: item.nama_kategori || 'Rumah'
 			})) : [];
 
-			console.log(' Mapped data:', mappedData);
-
+			console.log('Mapped data:', mappedData);
 			setWishlistItems(mappedData);
 			setError(null);
 		} catch (err) {
 			console.error('❌ Error fetching wishlist:', err);
-			console.error('Response:', err.response?.data);
 			setError(err.response?.data?.message || 'Gagal memuat daftar wishlist');
 		} finally {
 			setLoading(false);
@@ -64,7 +57,7 @@ export default function Wishlist() {
 	const removeFromWishlist = async (wishlistId) => {
 		try {
 			const token = localStorage.getItem('token');
-
+			
 			await http.delete(`/wishlist/${wishlistId}`, {
 				headers: {
 					Authorization: `Bearer ${token}`
@@ -85,6 +78,10 @@ export default function Wishlist() {
 	const handleCardClick = (propertyId) => {
 		navigate(`/property/${propertyId}`);
 	};
+
+	useEffect(() => {
+		fetchWishlist();
+	}, []);
 
 	if (loading) {
 		return (

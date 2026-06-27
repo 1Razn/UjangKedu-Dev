@@ -12,7 +12,6 @@ export default function Profile() {
 	const [wishlistCount, setWishlistCount] = useState(0);
 	const [propertiesCount, setPropertiesCount] = useState(0);
 	const navigate = useNavigate();
-
 	const [formData, setFormData] = useState({
 		nama: '',
 		email: '',
@@ -21,7 +20,6 @@ export default function Profile() {
 		role: ''
 	});
 
-	// ✅ Tambahkan base URL untuk gambar
 	const BASE_URL = 'http://localhost:3000';
 
 	useEffect(() => {
@@ -168,16 +166,13 @@ export default function Profile() {
 		}
 	};
 
-	// ✅ Helper function untuk mendapatkan URL gambar profil
 	const getProfileImageUrl = (fotoProfil) => {
 		if (!fotoProfil) return null;
 
-		// Jika sudah ada http:// atau https://
 		if (fotoProfil.startsWith('http://') || fotoProfil.startsWith('https://')) {
 			return fotoProfil;
 		}
 
-		// Jika hanya nama file, tambahkan path lengkap
 		return `${BASE_URL}/uploads/profile/${fotoProfil}`;
 	};
 
@@ -208,7 +203,6 @@ export default function Profile() {
 	return (
 		<div className="profile-page">
 			<div className="profile-container">
-				{/* Header Profile */}
 				<div className="profile-header">
 					<div className="profile-avatar-section">
 						<div className="profile-avatar">
@@ -235,7 +229,6 @@ export default function Profile() {
 					</div>
 				</div>
 
-				{/* Tabs Navigation */}
 				<div className="profile-tabs">
 					<button
 						className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
@@ -257,9 +250,7 @@ export default function Profile() {
 					</button>
 				</div>
 
-				{/* Tab Content */}
 				<div className="profile-content">
-					{/* Profile Tab */}
 					{activeTab === 'profile' && (
 						<div className="profile-tab-content">
 							<div className="profile-section">
@@ -355,18 +346,9 @@ export default function Profile() {
 									</form>
 								)}
 							</div>
-
-							{/* <div className="profile-section danger-zone">
-								<h2>Akun</h2>
-								<p>Kelola pengaturan akun Anda</p>
-								<button className="btn-logout" onClick={handleLogout}>
-									<i className="fa-solid fa-sign-out-alt"></i> Logout
-								</button>
-							</div> */}
 						</div>
 					)}
 
-					{/* Wishlist Tab */}
 					{activeTab === 'wishlist' && (
 						<div className="profile-tab-content">
 							<div className="empty-state-placeholder">
@@ -380,7 +362,6 @@ export default function Profile() {
 						</div>
 					)}
 
-					{/* Properties Tab */}
 					{activeTab === 'properties' && (
 						<div className="profile-tab-content">
 							<div className="empty-state-placeholder">
@@ -389,7 +370,7 @@ export default function Profile() {
 								<p>Anda memiliki {propertiesCount} properti yang diposting</p>
 								{user.role === 'User' && (
 									<button onClick={() => navigate('/posting-iklan')} className="btn-primary">
-										<i className="fa-solid fa-plus"></i> Posting Properti Baru
+										Posting Properti Baru
 									</button>
 								)}
 							</div>

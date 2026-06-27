@@ -22,10 +22,12 @@ class PropertiController {
         p.user_id, 
         p.foto_properti,
         k.nama_kategori AS category,
-        u.nama AS agent_name
-      FROM properti p
-      LEFT JOIN kategori_properti k ON p.kategori_properti_id = k.id
-      LEFT JOIN user u ON p.user_id = u.id
+        u.nama AS agent_name,
+        u.no_hp AS agent_phone,
+        u.email AS agent_email 
+      FROM properti p 
+      LEFT JOIN kategori_properti k ON p.kategori_properti_id = k.id 
+      LEFT JOIN user u ON p.user_id = u.id 
       ORDER BY p.tanggal_tayang DESC
     `;
 
@@ -50,7 +52,9 @@ class PropertiController {
         p.tanggal_tayang, p.tanggal_kadaluarsa, p.kategori_properti_id,
         p.paket_iklan_id, p.user_id, p.foto_properti,
         k.nama_kategori AS category,
-        u.nama AS agent_name
+        u.nama AS agent_name,
+        u.no_hp AS agent_phone,
+        u.email AS agent_email       
       FROM properti p
       LEFT JOIN kategori_properti k ON p.kategori_properti_id = k.id
       LEFT JOIN user u ON p.user_id = u.id
@@ -60,11 +64,11 @@ class PropertiController {
     db.query(query, [req.params.id], (err, result) => {
       if (err) return errorHandler(res, err, 500, 'Gagal mengambil detail properti');
       if (result.length === 0) return errorHandler(res, new Error('Not Found'), 404, 'Properti tidak ditemukan');
-      
-      res.status(200).json({ 
-        success: true, 
-        message: 'Detail properti', 
-        data: result[0] 
+
+      res.status(200).json({
+        success: true,
+        message: 'Detail properti',
+        data: result[0]
       });
     });
   }
@@ -78,7 +82,7 @@ class PropertiController {
 
     const newProperti = { ...req.body };
     if (req.file) {
-      newProperti.foto_properti = req.file.filename; 
+      newProperti.foto_properti = req.file.filename;
     }
 
     Properti.create(newProperti, (err, result) => {
@@ -119,7 +123,6 @@ class PropertiController {
 
       const oldFoto = oldResult[0].foto_properti;
       const updateData = { ...req.body };
-      // ✅ Simpan HANYA nama file (bukan path lengkap)
       updateData.foto_properti = req.file ? req.file.filename : oldFoto;
 
       Properti.update(req.params.id, updateData, (err, result) => {
@@ -166,10 +169,10 @@ class PropertiController {
         Properti.delete(id, (err, result) => {
           if (err) return errorHandler(res, err, 500, 'Gagal menghapus properti');
           if (result.affectedRows === 0) return errorHandler(res, new Error('Not Found'), 404, 'Properti tidak ditemukan');
-          
-          res.status(200).json({ 
-            success: true, 
-            message: 'Properti beserta komentar dan laporan terkait berhasil diblokir & dihapus' 
+
+          res.status(200).json({
+            success: true,
+            message: 'Properti beserta komentar dan laporan terkait berhasil diblokir & dihapus'
           });
         });
       });

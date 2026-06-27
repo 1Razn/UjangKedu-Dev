@@ -39,7 +39,7 @@ export default function PropertyCard({ p }) {
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Silakan login untuk menambahkan ke wishlist');
-      navigate('/login');
+      openLogin();
       return;
     }
 

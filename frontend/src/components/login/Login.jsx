@@ -15,14 +15,13 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const response = await login(form.email, form.password);
-      
+
       if (response.success) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        
+
         if (response.data.user.role === "Admin") {
           navigate("/admin");
         } else {
@@ -41,16 +40,23 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-left">
+          {/* Button Kembali ke Home */}
+          <button
+            onClick={() => navigate("/")}
+            className="login-back-home"
+            type="button"
+          >
+            <i className="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+          </button>
+
           <Link to="/" className="login-brand">
-            <span className="brand-light">Booking Tanah</span>
+            <span className="brand-light">Booking Tanah </span>
             <span className="brand-amp"> dan </span>
             <br />
             <span className="brand-dark">Property</span>
           </Link>
 
-          <p className="login-subtitle">
-            Masuk ke akun BOTY Anda untuk melanjutkan.
-          </p>
+          <p className="login-subtitle">Masuk ke akun BOTY Anda untuk melanjutkan.</p>
 
           {error && (
             <div className="login-error">
@@ -101,18 +107,21 @@ export default function Login() {
               <a href="#" className="login-forgot">Forgot password?</a>
             </div>
 
-            <button 
-              type="submit" 
-              className="login-submit"
-              disabled={loading}
-            >
+            <button type="submit" className="login-submit" disabled={loading}>
               {loading ? (
-                <><i className="fa-solid fa-spinner fa-spin"></i> Memproses...</>
+                <> <i className="fa-solid fa-spinner fa-spin"></i> Memproses... </>
               ) : (
-                <><i className="fa-solid fa-right-to-bracket"></i> Login</>
+                <> <i className="fa-solid fa-right-to-bracket"></i> Login </>
               )}
             </button>
           </form>
+
+          <div className="login-register-link">
+            <span>Belum punya akun? </span>
+            <Link to="/register" className="login-register-text">
+              Daftar di sini
+            </Link>
+          </div>
 
           <div className="login-footer">
             <p>© Copyright 2026 BOTY</p>

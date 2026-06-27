@@ -5,10 +5,12 @@ import http from '../../utils/http.js';
 import "./PropertySearch.css";
 
 export default function PropertySearch() {
+  const { openLogin } = useAuth();
   const [properties, setProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [wishlistStatus, setWishlistStatus] = useState({}); // { propertyId: { isWishlisted, wishlistId } }
   const [wishlistLoading, setWishlistLoading] = useState({});
   const navigate = useNavigate();
 
@@ -18,15 +20,28 @@ export default function PropertySearch() {
         setLoading(true);
         const data = await getProperties();
         
-        // Tambahkan status wishlist ke setiap properti
-        const propertiesWithWishlist = await Promise.all(
+        // Cek status wishlist untuk setiap properti
+        const token = localStorage.getItem('token');
+        const propertiesWithStatus = await Promise.all(
           data.map(async (item) => {
-            const isWishlisted = await checkWishlistStatus(item.id);
-            return { ...item, isWishlisted };
+            if (!token) return { ...item, isWishlisted: false, wishlistId: null };
+            
+            try {
+              const response = await http.get(`/wishlist/check/${item.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              return {
+                ...item,
+                isWishlisted: response.data.data?.isWishlisted || false,
+                wishlistId: response.data.data?.wishlistId || null
+              };
+            } catch (error) {
+              return { ...item, isWishlisted: false, wishlistId: null };
+            }
           })
         );
         
-        setProperties(propertiesWithWishlist);
+        setProperties(propertiesWithStatus);
         setError(null);
       } catch (err) {
         setError('Gagal memuat data properti');
@@ -35,98 +50,64 @@ export default function PropertySearch() {
         setLoading(false);
       }
     };
-    
+
     fetchProperties();
   }, []);
-
-  const checkWishlistStatus = async (propertyId) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return false;
-
-      const response = await http.get(`/wishlist/check/${propertyId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      return response.data.data?.isWishlisted || false;
-    } catch (error) {
-      console.error('Error checking wishlist status:', error);
-      return false;
-    }
-  };
 
   const toggleWishlist = async (e, propertyId) => {
     e.preventDefault();
     e.stopPropagation();
-
+    
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Silakan login untuk menambahkan ke wishlist');
-      navigate('/login');
+      openLogin();
       return;
     }
+
+    const property = properties.find(p => p.id === propertyId);
+    if (!property) return;
 
     setWishlistLoading(prev => ({ ...prev, [propertyId]: true }));
 
     try {
-      const property = properties.find(p => p.id === propertyId);
-      
       if (property.isWishlisted) {
-        await removeFromWishlist(token, propertyId);
+        // Hapus dari wishlist
+        if (property.wishlistId) {
+          await http.delete(`/wishlist/${property.wishlistId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+        }
+        // Update state
+        setProperties(prev =>
+          prev.map(item =>
+            item.id === propertyId
+              ? { ...item, isWishlisted: false, wishlistId: null }
+              : item
+          )
+        );
       } else {
-        await addToWishlist(token, propertyId);
+        // Tambah ke wishlist
+        const response = await http.post(
+          '/wishlist',
+          { properti_id: propertyId },
+          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        );
+        
+        if (response.data.success) {
+          setProperties(prev =>
+            prev.map(item =>
+              item.id === propertyId
+                ? { ...item, isWishlisted: true, wishlistId: response.data.wishlistId }
+                : item
+            )
+          );
+        }
       }
-
-      // Update state
-      setProperties(prev => 
-        prev.map(item => 
-          item.id === propertyId 
-            ? { ...item, isWishlisted: !item.isWishlisted }
-            : item
-        )
-      );
     } catch (error) {
       console.error('Error toggling wishlist:', error);
       alert('Terjadi kesalahan, silakan coba lagi');
     } finally {
       setWishlistLoading(prev => ({ ...prev, [propertyId]: false }));
-    }
-  };
-
-  const addToWishlist = async (token, propertyId) => {
-    const response = await http.post('/wishlist', 
-      { properti_id: propertyId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    
-    if (!response.data.success) {
-      throw new Error('Gagal menambahkan ke wishlist');
-    }
-  };
-
-  const removeFromWishlist = async (token, propertyId) => {
-    const response = await http.get('/wishlist', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const wishlistItem = response.data.data?.find(
-      item => item.properti_id === propertyId
-    );
-
-    if (wishlistItem) {
-      await http.delete(`/wishlist/${wishlistItem.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
     }
   };
 
@@ -198,17 +179,19 @@ export default function PropertySearch() {
                   <img src={item.image} alt={item.title} className="img-custom" />
                   <span className="badge-jual">{item.type}</span>
                   
-                  {/* Wishlist Button */}
+                  {/* Wishlist Button - Sama seperti PropertyCard */}
                   <button
-                    className={`badge-heart ${item.isWishlisted ? "active" : ""} ${wishlistLoading[item.id] ? "loading" : ""}`}
+                    className={`property-like ${item.isWishlisted ? 'liked' : ''} ${wishlistLoading[item.id] ? 'loading' : ''}`}
                     onClick={(e) => toggleWishlist(e, item.id)}
+                    aria-label="Wishlist"
                     disabled={wishlistLoading[item.id]}
-                    title={item.isWishlisted ? "Hapus dari Wishlist" : "Tambahkan ke Wishlist"}
                   >
                     {wishlistLoading[item.id] ? (
-                      <span>⏳</span>
+                      <i className="fa-solid fa-spinner fa-spin"></i>
+                    ) : item.isWishlisted ? (
+                      <i className="fa-solid fa-heart"></i>
                     ) : (
-                      <span>{item.isWishlisted ? "❤️" : "🤍"}</span>
+                      <i className="fa-regular fa-heart"></i>
                     )}
                   </button>
                 </div>

@@ -92,7 +92,6 @@ export default function Promosi() {
               Pilih paket iklan yang tepat untuk meningkatkan visibilitas properti Anda di BOTY.
             </p>
           </div>
-          {/* <Link to="/" className="btn btn-outline">Lihat Semua Paket</Link> */}
         </div>
 
         <div className="promo-grid">

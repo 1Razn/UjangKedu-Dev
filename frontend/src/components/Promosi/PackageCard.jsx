@@ -35,7 +35,6 @@ export default function PackageCard({ paket, selected, onSelect }) {
         <li>✓ Tayang di halaman utama</li>
         <li>✓ Prioritas pencarian</li>
         <li>✓ Badge properti unggulan</li>
-        {typeClass === 'gold' && <li>✓ Highlight warna emas</li>}
         {typeClass === 'gold' && <li>✓ Iklan media sosial</li>}
       </ul>
 

@@ -17,6 +17,8 @@ const mapPropertyData = (item) => ({
   type: item.tipe || item.type || "Jual",
   category: item.category || item.nama_kategori || "Rumah",
   area: item.luas_properti || item.area || 0,
+  no_hp: item.agent_phone || item.agent_phone || item.user_no_hp || "Nomor tidak tersedia",
+  email: item.agent_email || item.agent_email || item.user_email || "Email tidak tersedia",
   agent: item.agent_name || item.agent || "Agen Tidak Diketahui",
   tanggal_tayang: item.tanggal_tayang || item.tanggal || null,
   luas_tanah: item.luas_tanah ?? item.luas_properti ?? null,

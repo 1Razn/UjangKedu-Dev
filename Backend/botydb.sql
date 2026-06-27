@@ -1,16 +1,14 @@
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
---
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2026 at 02:41 AM
+-- Generation Time: Jun 27, 2026 at 10:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +24,7 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `kategori_properti`
 --
-
+DROP TABLE IF EXISTS `kategori_properti`;
 CREATE TABLE `kategori_properti` (
   `id` int(11) NOT NULL,
   `nama_kategori` varchar(30) NOT NULL
@@ -35,7 +33,6 @@ CREATE TABLE `kategori_properti` (
 --
 -- Dumping data for table `kategori_properti`
 --
-
 INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
 (1, 'Rumah'),
 (2, 'Apartemen'),
@@ -48,7 +45,7 @@ INSERT INTO `kategori_properti` (`id`, `nama_kategori`) VALUES
 --
 -- Table structure for table `komentar`
 --
-
+DROP TABLE IF EXISTS `komentar`;
 CREATE TABLE `komentar` (
   `id` int(11) NOT NULL,
   `komentar` text NOT NULL,
@@ -60,15 +57,17 @@ CREATE TABLE `komentar` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `laporan`
+-- Table structure for table `laporan` (DIPERBARUI)
 --
-
+DROP TABLE IF EXISTS `laporan`;
 CREATE TABLE `laporan` (
   `id` int(11) NOT NULL,
+  `judul_laporan` varchar(100) NOT NULL,
   `keterangan` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `properti_id` int(11) NOT NULL,
-  `status` enum('pending','diterima','ditolak') DEFAULT 'pending'
+  `status` enum('pending','diterima','ditolak') DEFAULT 'pending',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -76,7 +75,7 @@ CREATE TABLE `laporan` (
 --
 -- Table structure for table `paket_iklan`
 --
-
+DROP TABLE IF EXISTS `paket_iklan`;
 CREATE TABLE `paket_iklan` (
   `id` int(11) NOT NULL,
   `nama_paket` varchar(20) NOT NULL,
@@ -88,18 +87,17 @@ CREATE TABLE `paket_iklan` (
 --
 -- Dumping data for table `paket_iklan`
 --
-
 INSERT INTO `paket_iklan` (`id`, `nama_paket`, `durasi_iklan`, `harga`, `deskripsi`) VALUES
-(1, 'Paket Bronze', '7 Hari', '50000', 'Paket hemat untuk pemula'),
-(2, 'Paket Silver', '30 Hari', '150000', 'Paket populer untuk agen'),
-(3, 'Paket Gold', '90 Hari', '400000', 'Paket premium dengan fitur highlight');
+(1, 'Paket Bronze', '7 Hari', '69000', 'Paket hemat untuk pemula'),
+(2, 'Paket Silver', '30 Hari', '239000', 'Paket populer'),
+(3, 'Paket Gold', '90 Hari', '659000', 'Paket premium dengan fitur highlight');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `properti`
 --
-
+DROP TABLE IF EXISTS `properti`;
 CREATE TABLE `properti` (
   `id` int(11) NOT NULL,
   `judul` varchar(100) NOT NULL,
@@ -115,24 +113,12 @@ CREATE TABLE `properti` (
   `foto_properti` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Dumping data for table `properti`
---
-
-INSERT INTO `properti` (`id`, `judul`, `deskripsi`, `alamat`, `luas_properti`, `harga`, `tanggal_tayang`, `tanggal_kadaluarsa`, `kategori_properti_id`, `paket_iklan_id`, `user_id`, `foto_properti`) VALUES
-(1, 'Rumah Minimalis Mod', 'Rumah minimalis 2 lantai, lokasi strategis dekat stasiun.', 'Jl. Mawar No. 123, Jaksel', '120', '850000000', '2026-01-15', '2026-02-14', 1, 2, 2, 'uploads/properti/rumah1.jpg'),
-(2, 'Rumah Mewah 3 Kamar', 'Rumah mewah 3 kamar tidur, 2 kamar mandi, garasi 2 mobil.', 'Jl. Anggrek No. 45, Dago', '200', '1500000000', '2026-01-20', '2026-04-20', 1, 3, 2, 'uploads/properti/rumah2.jpg'),
-(3, 'Apartemen Studio Jkt', 'Apartemen studio fully furnished, strategis di pusat kota.', 'Jl. Sudirman Kav. 52', '36', '650000000', '2026-01-25', '2026-04-25', 2, 3, 2, 'uploads/properti/apartemen1.jpg'),
-(4, 'Tanah Kavling Depok', 'Tanah kavling siap bangun, SHM, dekat UI dan stasiun KRL.', 'Jl. Margonda Raya', '150', '450000000', '2026-01-10', '2026-04-10', 3, 3, 2, 'uploads/properti/tanah1.jpg'),
-(5, 'Ruko 2 Lantai Bdg', 'Ruko 2 lantai, lokasi strategis dekat kampus dan mall.', 'Jl. Dago Atas No. 88', '100', '1800000000', '2026-02-01', '2026-03-03', 4, 2, 2, 'uploads/properti/ruko2.jpg'),
-(6, 'Kost Eksklusif Jaks', 'Kost eksklusif fasilitas lengkap. AC, kamar mandi dalam, wifi.', 'Jl. Fatmawati No. 45', '200', '2500000', '2026-02-08', '2026-03-10', 5, 2, 2, 'uploads/properti/kost1.jpg');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `user`
 --
-
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `nama` varchar(30) NOT NULL,
@@ -146,7 +132,6 @@ CREATE TABLE `user` (
 --
 -- Dumping data for table `user`
 --
-
 INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `foto_profil`, `password`, `role`) VALUES
 (1, 'Admin', '081234567890', 'admin@boty.com', NULL, '$2b$10$yPTBQO7vMuzZqbBaOOoXNuWz/55efCmuNwbr7NbiKXR0lmDVKSay.', 'Admin'),
 (2, 'User', '081234567891', 'user@gmail.com', NULL, '$2b$10$PQlagidYO.w2lXiDLZpWJe3mfDZJZ/7UXkqNgwmADkAxAgLxzC5mu', 'User');
@@ -156,12 +141,14 @@ INSERT INTO `user` (`id`, `nama`, `no_hp`, `email`, `foto_profil`, `password`, `
 --
 -- Table structure for table `wishlist`
 --
-
+DROP TABLE IF EXISTS `wishlist`;
 CREATE TABLE `wishlist` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `properti_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Indexes for dumped tables
@@ -219,6 +206,8 @@ ALTER TABLE `wishlist`
   ADD UNIQUE KEY `unique_user_properti` (`user_id`,`properti_id`),
   ADD KEY `fk_wishlist_properti1_idx` (`properti_id`);
 
+-- --------------------------------------------------------
+
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -265,6 +254,8 @@ ALTER TABLE `user`
 ALTER TABLE `wishlist`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
+-- --------------------------------------------------------
+
 --
 -- Constraints for dumped tables
 --
@@ -298,6 +289,7 @@ ALTER TABLE `properti`
 ALTER TABLE `wishlist`
   ADD CONSTRAINT `fk_wishlist_properti1` FOREIGN KEY (`properti_id`) REFERENCES `properti` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_wishlist_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
