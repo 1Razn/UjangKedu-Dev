@@ -40,7 +40,7 @@ export default function Navbar() {
       <div className="container navbar-inner">
         <Link to="/" className="navbar-logo">
           <span className="navbar-logo-icon">
-            <img src="../../../public/logo.png" alt="Logo" />
+            <img src="logo.png" alt="Logo" />
           </span>
           <span className="navbar-logo-text">BOTY</span>
         </Link>
