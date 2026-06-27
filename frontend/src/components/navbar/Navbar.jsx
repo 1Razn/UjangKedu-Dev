@@ -69,9 +69,8 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {/* ✅ Gunakan Link ke /login */}
               <Link to="/login" className="btn-ghost hide-sm">Masuk</Link>
-              <Link to="/login" className="btn-primary">Daftar</Link>
+              <Link to="/register" className="btn-primary">Daftar</Link>
             </>
           )}
           <button 
