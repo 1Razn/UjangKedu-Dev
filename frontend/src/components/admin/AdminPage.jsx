@@ -4,7 +4,7 @@ import AdminStats from "./AdminStats.jsx";
 import UserTable from "./UserTable.jsx";
 import ReportTable from "./ReportTable.jsx";
 import UserForm from "./UserForm.jsx";
-import { getUsers } from "../../api/userApi.js";
+import { getUsers, deleteUser } from "../../api/userApi.js";
 import http from "../../utils/http.js";
 import "./AdminPage.css";
 
@@ -80,7 +80,6 @@ export default function AdminPage() {
       onConfirm: async () => {
         setConfirmDialog({ show: false, message: "", onConfirm: null }); 
         try {
-          const { deleteUser } = await import("../../api/userApi.js");
           await deleteUser(userId);
           setUsers(prev => prev.filter(u => u.id !== userId));
           showToast("User berhasil dihapus!", "success");
