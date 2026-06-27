@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import PropertyCard from "./PropertyCard.jsx";
 import http from "../../utils/http.js";
-import { getCategories } from "../../api/KategoriApi.js";
+import { getCategories } from "../../api/kategoriApi.js";
 import "./Main_content.css";
 
 export default function Featured({ selectedCategory, onClearCategory }) {

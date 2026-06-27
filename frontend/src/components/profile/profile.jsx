@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import http from '../../utils/http.js';
-import './Profile.css';
+import './profile.css';
 
 export default function Profile() {
 	const [user, setUser] = useState(null);
