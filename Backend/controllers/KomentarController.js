@@ -3,85 +3,110 @@ const { validateKomentar, validateKomentarExistence, validateId } = require("../
 const errorHandler = require('../utils/errorHandler');
 
 class KomentarController {
-    index(req, res) {
-        Komentar.getAll((err, result) => {
-            if (err) {
-                return errorHandler(res, err, 500, 'Gagal mengambil data');
-            }
-            res.status(200).json({
-                success: true,
-                message: 'Berhasil mengambil data',
-                data: result
-            });
-        });
-    }
+	index(req, res) {
+		Komentar.getAll((err, result) => {
+			if (err) {
+				return errorHandler(res, err, 500, 'Gagal mengambil data');
+			}
+			res.status(200).json({
+				success: true,
+				message: 'Berhasil mengambil data',
+				data: result
+			});
+		});
+	}
 
-    show(req, res) {
-        const { id } = req.params;
-        
-        const idError = validateId(id); 
-        if (idError) {
-            return errorHandler(res, new Error(idError), 400, idError);
-        }
+	show(req, res) {
+		const { id } = req.params;
 
-        Komentar.getById(id, (err, result) => {
-            if (err) {
-                return errorHandler(res, err, 500, 'Gagal mengambil data'); 
-            }
-            if (result.length === 0) {
-                return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan'); 
-            }
-            res.status(200).json({ 
-                success: true, 
-                message: 'Detail Komentar', 
-                data: result[0] 
-            }); 
-        });
-    }
+		const idError = validateId(id);
+		if (idError) {
+			return errorHandler(res, new Error(idError), 400, idError);
+		}
 
-    async store(req, res) {
-        const validationError = validateKomentar(req.body); 
-        if (validationError) {
-            return errorHandler(res, new Error(validationError), 400, validationError); 
-        }
+		Komentar.getById(id, (err, result) => {
+			if (err) {
+				return errorHandler(res, err, 500, 'Gagal mengambil data');
+			}
+			if (result.length === 0) {
+				return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan');
+			}
+			res.status(200).json({
+				success: true,
+				message: 'Detail Komentar',
+				data: result[0]
+			});
+		});
+	}
 
-        const existenceErrors = await validateKomentarExistence(req.body);
-        if (existenceErrors) {
-            return errorHandler(res, new Error(existenceErrors.join(', ')), 400, existenceErrors.join(', '));
-        }
+	getByProperti(req, res) {
+		const { propertiId } = req.params;
 
-        const newKomentar = req.body;
-        Komentar.create(newKomentar, (err, result) => {
-            if (err) {
-                return errorHandler(res, err, 500, 'Gagal membuat komentar');
-            }
-            res.status(201).json({ 
-                success: true, 
-                message: 'Komentar berhasil dibuat', 
-                komentarId: result.insertId 
-            }); 
-        });
-    }
+		if (!propertiId) {
+			return errorHandler(res, new Error('Properti ID diperlukan'), 400, 'Properti ID diperlukan');
+		}
 
-    destroy(req, res) {
-        const idError = validateId(req.params.id); 
-        if (idError) {
-            return errorHandler(res, new Error(idError), 400, idError); 
-        }
+		Komentar.getByPropertiId(propertiId, (err, result) => {
+			if (err) {
+				return errorHandler(res, err, 500, 'Gagal mengambil data komentar');
+			}
+			res.status(200).json({
+				success: true,
+				message: 'Berhasil mengambil komentar properti',
+				data: result
+			});
+		});
+	}
 
-        Komentar.delete(req.params.id, (err, result) => {
-            if (err) {
-                return errorHandler(res, err, 500, 'Gagal menghapus komentar'); 
-            }
-            if (result.affectedRows === 0) {
-                return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan');
-            }
-            res.status(200).json({ 
-                success: true, 
-                message: 'Komentar berhasil dihapus' 
-            }); 
-        });
-    }
+	async store(req, res) {
+		const validationError = validateKomentar(req.body);
+		if (validationError) {
+			return errorHandler(res, new Error(validationError), 400, validationError);
+		}
+
+		const existenceErrors = await validateKomentarExistence(req.body);
+		if (existenceErrors) {
+			return errorHandler(res, new Error(existenceErrors.join(', ')), 400, existenceErrors.join(', '));
+		}
+
+		const newKomentar = {
+			properti_id: req.body.properti_id,
+			komentar: req.body.komentar,
+			user_id: req.body.user_id,
+			komentar_id: req.body.komentar_id || null
+		};
+
+		Komentar.create(newKomentar, (err, result) => {
+			if (err) {
+				return errorHandler(res, err, 500, 'Gagal membuat komentar');
+			}
+			res.status(201).json({
+				success: true,
+				message: 'Komentar berhasil dibuat',
+				komentarId: result.insertId
+			});
+		});
+	}
+
+	destroy(req, res) {
+		const idError = validateId(req.params.id);
+		if (idError) {
+			return errorHandler(res, new Error(idError), 400, idError);
+		}
+
+		Komentar.delete(req.params.id, (err, result) => {
+			if (err) {
+				return errorHandler(res, err, 500, 'Gagal menghapus komentar');
+			}
+			if (result.affectedRows === 0) {
+				return errorHandler(res, new Error('Not Found'), 404, 'Komentar tidak ditemukan');
+			}
+			res.status(200).json({
+				success: true,
+				message: 'Komentar berhasil dihapus'
+			});
+		});
+	}
 }
 
 module.exports = new KomentarController();

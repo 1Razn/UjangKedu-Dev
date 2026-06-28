@@ -9,7 +9,6 @@ export default function KomentarList({ propertiId }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [formData, setFormData] = useState({ isi_komentar: "" });
   
-  // ✅ Ambil data user yang sedang login dari localStorage
   const token = localStorage.getItem("token");
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -27,6 +26,7 @@ export default function KomentarList({ propertiId }) {
       } else {
         setKomentar(allData);
       }
+      setError(null);
     } catch (err) {
       setError(`Gagal: ${err.message}`);
       console.error(err);
@@ -36,7 +36,9 @@ export default function KomentarList({ propertiId }) {
   };
 
   useEffect(() => {
-    fetchKomentarData();
+    if (propertiId) {
+      fetchKomentarData();
+    }
   }, [propertiId]);
 
   const handleSubmit = async (e) => {
@@ -48,10 +50,9 @@ export default function KomentarList({ propertiId }) {
       await http.post(
         "/komentar",
         {
-          properti_id: propertiId,
+          properti_id: parseInt(propertiId),
           komentar: formData.isi_komentar,
-          user_id: currentUser.id,
-          nama_user: currentUser.nama // ✅ Kirim nama user saat posting
+          user_id: currentUser.id
         },
         {
           headers: {
@@ -70,18 +71,12 @@ export default function KomentarList({ propertiId }) {
     }
   };
 
-  // ✅ Helper function untuk mendapatkan nama user
   const getUserName = (item) => {
-    // Prioritas 1: Nama dari backend (jika ada)
     if (item.nama_user) return item.nama_user;
-    
-    // Prioritas 2: Jika komentar dari user yang sedang login, ambil dari localStorage
     if (item.user_id === currentUser.id && currentUser.nama) {
       return currentUser.nama;
     }
-    
-    // Fallback: Tampilkan "User" + ID
-    return `User ID: ${item.user_id}`;
+    return `User ${item.user_id}`;
   };
 
   if (loading) return <div className="komentar-status">Memuat komentar... ⏳</div>;

@@ -5,12 +5,11 @@ import http from '../../utils/http.js';
 import "./PropertySearch.css";
 
 export default function PropertySearch() {
-  const { openLogin } = useAuth();
   const [properties, setProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [wishlistStatus, setWishlistStatus] = useState({}); // { propertyId: { isWishlisted, wishlistId } }
+  const [wishlistStatus, setWishlistStatus] = useState({});
   const [wishlistLoading, setWishlistLoading] = useState({});
   const navigate = useNavigate();
 
@@ -60,7 +59,7 @@ export default function PropertySearch() {
     
     const token = localStorage.getItem('token');
     if (!token) {
-      openLogin();
+      navigate('/login');
       return;
     }
 

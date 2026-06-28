@@ -4,19 +4,29 @@ import { getPropertyByIdApi } from "../../api/propertiApi.js";
 import KomentarList from "../komentar/KomentarList";
 import "./PropertyDetail.css";
 
+// ✅ Helper untuk URL gambar (menggunakan proxy Vite)
+const getImageUrl = (filename) => {
+  if (!filename) return "";
+  // Jika sudah URL lengkap (http/https), kembalikan apa adanya
+  if (filename.startsWith("http://") || filename.startsWith("https://")) {
+    return filename;
+  }
+  // Gunakan path relatif yang akan di-proxy oleh Vite
+  return `/uploads/properti/${filename}`;
+};
+
 export default function PropertyDetail() {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [active, setActive] = useState(0);
 
   useEffect(() => {
     async function fetchProperty() {
       try {
         setLoading(true);
         const data = await getPropertyByIdApi(id);
-        console.log("🔍 Data property dari API:", data);
+        console.log("Data property dari API:", data);
         setProperty(data);
       } catch (err) {
         console.error("Gagal memuat detail properti:", err);
@@ -51,21 +61,15 @@ export default function PropertyDetail() {
     );
   }
 
-  const gallery = property.gallery && property.gallery.length ? property.gallery : [property.image];
-
   const formatWhatsAppNumber = (phone) => {
     if (!phone) return "";
-
     let cleaned = phone.replace(/\D/g, "");
-
     if (cleaned.startsWith("0")) {
       cleaned = "62" + cleaned.substring(1);
     }
-
     if (!cleaned.startsWith("62") && cleaned.length === 10) {
       cleaned = "62" + cleaned;
     }
-
     return cleaned;
   };
 
@@ -81,25 +85,13 @@ export default function PropertyDetail() {
         <div className="detail-main">
           <div className="detail-gallery">
             <div className="detail-gallery-main">
-              <img src={property.image} alt={property.title} />
+              {/* ✅ Gunakan helper getImageUrl */}
+              <img src={getImageUrl(property.image)} alt={property.title} />
               <div className="detail-badges">
                 <span className="badge badge-primary">{property.type}</span>
                 {property.featured && <span className="badge badge-warning">Featured</span>}
               </div>
             </div>
-            {gallery.length > 1 && (
-              <div className="detail-thumbs">
-                {gallery.map((g, i) => (
-                  <button
-                    key={i}
-                    className={`detail-thumb ${i === active ? "active" : ""}`}
-                    onClick={() => setActive(i)}
-                  >
-                    <img src={g} alt={`${property.title} ${i + 1}`} />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           <div className="detail-block">
@@ -193,7 +185,6 @@ export default function PropertyDetail() {
             </div>
             <p className="detail-agent-price">{property.price}</p>
 
-            {/* Tombol Hubungi Penjual - WhatsApp */}
             {property.no_hp && (
               <a
                 className="btn btn-primary detail-agent-btn"
@@ -207,7 +198,6 @@ export default function PropertyDetail() {
               </a>
             )}
 
-            {/* Tombol Kirim Pesan - Email (Gmail) */}
             {(property.agent_email || property.user_email || property.email) && (
               <a
                 className="btn btn-outline detail-agent-btn"

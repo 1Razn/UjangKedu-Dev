@@ -43,6 +43,7 @@ router.delete("/user/:id", authenticateToken, UserController.destroy);
 router.get("/komentar", KomentarController.index);
 router.get("/komentar/:id", KomentarController.show);
 router.post("/komentar", authenticateToken, KomentarController.store);
+router.get('/komentar/properti/:propertiId', KomentarController.getByProperti);
 router.delete("/komentar/:id", authenticateToken, KomentarController.destroy);
 
 router.get("/wishlist", authenticateToken, WishlistController.index);
