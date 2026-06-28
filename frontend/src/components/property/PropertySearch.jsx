@@ -4,6 +4,17 @@ import { getProperties } from '../../api/propertiApi.js';
 import http from '../../utils/http.js';
 import "./PropertySearch.css";
 
+// ✅ UBAH: Gunakan relative path agar menggunakan proxy Vite
+const getImageUrl = (filename) => {
+  if (!filename) return "";
+  // Jika sudah URL lengkap (http/https), kembalikan apa adanya
+  if (filename.startsWith("http://") || filename.startsWith("https://")) {
+    return filename;
+  }
+  // ✅ Gunakan relative path - akan di-proxy oleh Vite ke backend
+  return `/uploads/properti/${filename}`;
+};
+
 export default function PropertySearch() {
   const [properties, setProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,7 +67,6 @@ export default function PropertySearch() {
   const toggleWishlist = async (e, propertyId) => {
     e.preventDefault();
     e.stopPropagation();
-    
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
@@ -175,7 +185,8 @@ export default function PropertySearch() {
             >
               <div className="card-custom">
                 <div className="image-wrapper-custom">
-                  <img src={item.image} alt={item.title} className="img-custom" />
+                  {/* ✅ Gunakan getImageUrl untuk gambar */}
+                  <img src={getImageUrl(item.image)} alt={item.title} className="img-custom" />
                   <span className="badge-jual">{item.type}</span>
                   
                   {/* Wishlist Button - Sama seperti PropertyCard */}
