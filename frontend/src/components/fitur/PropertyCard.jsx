@@ -3,6 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import http from "../../utils/http.js";
 import "./PropertyCard.css";
 
+// ✅ Tambahkan helper function untuk URL gambar
+const getImageUrl = (filename) => {
+  if (!filename) return "";
+  // Jika sudah URL lengkap (http/https), kembalikan apa adanya
+  if (filename.startsWith("http://") || filename.startsWith("https://")) {
+    return filename;
+  }
+  // Gunakan path relatif yang akan di-proxy oleh Vite ke backend
+  return `/uploads/properti/${filename}`;
+};
+
 export default function PropertyCard({ p }) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistId, setWishlistId] = useState(null);
@@ -35,11 +46,10 @@ export default function PropertyCard({ p }) {
   const toggleWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Silakan login untuk menambahkan ke wishlist');
-      openLogin();
+      navigate('/login'); // Sesuaikan dengan route login Anda
       return;
     }
 
@@ -68,7 +78,7 @@ export default function PropertyCard({ p }) {
             }
           }
         );
-        
+
         if (response.data.success) {
           setIsWishlisted(true);
           setWishlistId(response.data.wishlistId);
@@ -91,12 +101,12 @@ export default function PropertyCard({ p }) {
   return (
     <Link to={`/property/${p.id}`} className="property-card">
       <div className="property-img-wrap">
-        <img src={p.image} alt={p.title} loading="lazy" />
+        {/* ✅ Gunakan helper getImageUrl untuk path gambar */}
+        <img src={getImageUrl(p.image)} alt={p.title} loading="lazy" />
         <div className="property-badges">
           <span className="badge badge-primary">{p.type}</span>
           {p.featured && <span className="badge badge-warning">Featured</span>}
         </div>
-        
         <button
           className={`property-like ${isWishlisted ? "liked" : ""} ${loading ? "loading" : ""}`}
           onClick={toggleWishlist}
