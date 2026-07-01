@@ -14,7 +14,7 @@ export default function AdminPage() {
   const [tab, setTab] = useState("dashboard");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [showForm, setShowForm] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
 
@@ -67,7 +67,7 @@ export default function AdminPage() {
     try {
       const usersData = await getUsers();
       setUsers(usersData);
-      setTab("users"); 
+      setTab("users");
     } catch (err) {
       console.error("Gagal reload data:", err);
     }
@@ -78,7 +78,7 @@ export default function AdminPage() {
       show: true,
       message: "Apakah Anda yakin ingin menghapus user ini?",
       onConfirm: async () => {
-        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        setConfirmDialog({ show: false, message: "", onConfirm: null });
         try {
           await deleteUser(userId);
           setUsers(prev => prev.filter(u => u.id !== userId));
@@ -91,16 +91,19 @@ export default function AdminPage() {
     });
   };
 
-  const handleBlockProperty = (propertiId) => {
+  const handleBlockProperty = (propertiId, reportId) => {
     setConfirmDialog({
       show: true,
-      message: "🚨 Yakin mau memblokir dan menghapus properti ini dari sistem? Tindakan ini tidak bisa dibatalkan!",
+      message: "🚨 Yakin mau memblokir dan menghapus properti ini dari sistem? Status laporan akan diubah menjadi 'Diterima'. Tindakan ini tidak bisa dibatalkan!",
       onConfirm: async () => {
-        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        setConfirmDialog({ show: false, message: "", onConfirm: null });
         try {
           await http.delete(`/properti/${propertiId}`);
-          showToast("Properti berhasil diblokir dan dihapus dari sistem!", "success");
-          
+
+          await http.put(`/laporan/${reportId}/status`, { status: 'diterima' });
+
+          showToast("Properti berhasil diblokir dan laporan disetujui!", "success");
+
           const responseLaporan = await http.get('/laporan');
           const dataLaporan = responseLaporan.data.data || responseLaporan.data;
           setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
@@ -115,13 +118,14 @@ export default function AdminPage() {
   const handleRejectReport = (reportId) => {
     setConfirmDialog({
       show: true,
-      message: "Apakah Anda yakin ingin menolak dan menghapus laporan ini?",
+      message: "Apakah Anda yakin ingin menolak laporan ini? Status laporan akan diubah menjadi 'Ditolak' dan tetap tersimpan di riwayat.",
       onConfirm: async () => {
-        setConfirmDialog({ show: false, message: "", onConfirm: null }); 
+        setConfirmDialog({ show: false, message: "", onConfirm: null });
         try {
-          await http.delete(`/laporan/${reportId}`);
-          showToast("Laporan berhasil ditolak dan dihapus!", "success");
-          
+          await http.put(`/laporan/${reportId}/status`, { status: 'ditolak' });
+
+          showToast("Laporan berhasil ditolak!", "success");
+
           const responseLaporan = await http.get('/laporan');
           const dataLaporan = responseLaporan.data.data || responseLaporan.data;
           setReports(Array.isArray(dataLaporan) ? dataLaporan : []);
@@ -186,7 +190,7 @@ export default function AdminPage() {
 
         <Link to="/" className="admin-back-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           Kembali ke Situs
         </Link>
@@ -203,9 +207,9 @@ export default function AdminPage() {
           });
         }} className="admin-logout-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
           </svg>
           Logout
         </button>
@@ -232,8 +236,8 @@ export default function AdminPage() {
               onSuccess={handleFormSuccess}
             />
           ) : (
-            <UserTable 
-              users={users} 
+            <UserTable
+              users={users}
               onEdit={handleEditUser}
               onDelete={handleDeleteUser}
               onAdd={handleAddUser}
@@ -293,13 +297,13 @@ export default function AdminPage() {
               {confirmDialog.message}
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button 
+              <button
                 onClick={() => setConfirmDialog({ show: false, message: "", onConfirm: null })}
                 style={{ padding: '10px 16px', border: 'none', borderRadius: '6px', backgroundColor: '#e5e7eb', color: '#374151', cursor: 'pointer', fontWeight: 'bold' }}
               >
                 Batal
               </button>
-              <button 
+              <button
                 onClick={confirmDialog.onConfirm}
                 style={{ padding: '10px 16px', border: 'none', borderRadius: '6px', backgroundColor: '#dc3545', color: 'white', cursor: 'pointer', fontWeight: 'bold' }}
               >
@@ -320,7 +324,7 @@ export default function AdminPage() {
           to { transform: scale(1); opacity: 1; }
         }
       `}</style>
-      
+
     </div>
   );
 }

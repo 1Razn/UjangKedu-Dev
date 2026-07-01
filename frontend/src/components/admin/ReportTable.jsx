@@ -4,7 +4,7 @@ import "./ReportTable.css";
 export default function ReportTable({ reports, onRejectReport, onBlockProperty }) {
   const [openId, setOpenId] = useState(null);
 
-  
+
   const safeReports = Array.isArray(reports) ? reports : [];
 
   return (
@@ -43,38 +43,38 @@ export default function ReportTable({ reports, onRejectReport, onBlockProperty }
                     <p className="report-reason">
                       {r.keterangan || 'Tidak ada deskripsi/keterangan.'}
                     </p>
-                    
+
                     {r.status === "pending" ? (
                       <div className="report-actions" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '15px' }}>
-                        
-                                                <button 
-                          style={{ 
-                            backgroundColor: '#dc3545', 
-                            color: 'white', 
-                            border: 'none', 
-                            padding: '10px 16px', 
-                            borderRadius: '6px', 
-                            cursor: 'pointer', 
+
+                        <button
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 16px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
                             fontWeight: 'bold',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '6px',
                             boxShadow: '0 2px 4px rgba(220, 53, 69, 0.2)'
-                          }} 
-                          onClick={() => onBlockProperty(r.properti_id)}
+                          }}
+                          onClick={() => onBlockProperty(r.properti_id, r.id)}
                         >
-                          🚨 Blokir Penipu
+                          🚨 Hapus Property
                         </button>
 
-                        <button 
-                          style={{ 
-                            backgroundColor: '#f9fafb', 
-                            color: '#4b5563', 
-                            border: '1px solid #d1d5db', 
-                            padding: '10px 16px', 
-                            borderRadius: '6px', 
-                            cursor: 'pointer', 
-                            fontWeight: 'bold' 
+                        <button
+                          style={{
+                            backgroundColor: '#f9fafb',
+                            color: '#4b5563',
+                            border: '1px solid #d1d5db',
+                            padding: '10px 16px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold'
                           }}
                           onClick={() => onRejectReport(r.id)}
                         >

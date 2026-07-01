@@ -56,6 +56,7 @@ router.get("/laporan", authenticateToken, LaporanController.index);
 router.get("/laporan/:id", authenticateToken, LaporanController.show);
 router.post("/laporan", authenticateToken, LaporanController.store);
 router.delete("/laporan/:id", authenticateToken, authorize('Admin'), LaporanController.destroy);
+router.put('/laporan/:id/status', authenticateToken, authorize('Admin'), LaporanController.updateStatusLaporan);
 
 router.get("/kategori", KategoriPropertiController.index);
 router.get("/kategori/:id", KategoriPropertiController.show);

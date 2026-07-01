@@ -24,7 +24,7 @@ export default function Laporan() {
 	const getUserIdFromStorage = () => {
 		const directId = localStorage.getItem('id') || localStorage.getItem('userId') || localStorage.getItem('user_id');
 		if (directId) return Number(directId);
-		
+
 		const userDataString = localStorage.getItem('user');
 		if (userDataString) {
 			if (!userDataString.startsWith('{') && !userDataString.startsWith('[')) return Number(userDataString);
@@ -67,7 +67,7 @@ export default function Laporan() {
 		} else {
 			async function fetchMyReports() {
 				const userId = currentUserId || getUserIdFromStorage();
-				
+
 				if (!userId) {
 					setLoadingReports(false);
 					return;
@@ -76,11 +76,11 @@ export default function Laporan() {
 				try {
 					const response = await http.get('/laporan');
 					const allReports = response.data.data || response.data;
-					
+
 					const userReports = Array.isArray(allReports)
 						? allReports.filter(r => Number(r.user_id) === userId)
 						: [];
-						
+
 					setMyReports(userReports);
 				} catch (err) {
 					console.error('Gagal memuat laporan saya:', err);
@@ -101,36 +101,36 @@ export default function Laporan() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		
+
 		const token = localStorage.getItem('token');
 		if (!token) {
 			navigate('/login');
 			return;
 		}
-		
+
 		const userId = currentUserId || getUserIdFromStorage() || 1;
-		
+
 		try {
 			await http.post('/laporan', {
-				user_id: userId,   
+				user_id: userId,
 				properti_id: propertiId,
-				judul_laporan: judul,     
+				judul_laporan: judul,
 				keterangan: deskripsi,
-				status: 'pending' 
+				status: 'pending'
 			});
-			
+
 			setNotificationType('success');
 			setNotificationMessage('Laporan Anda telah berhasil terkirim ke sistem!');
 			setShowNotification(true);
-			
+
 			setJudul('');
 			setDeskripsi('');
-			
+
 			setTimeout(() => setShowNotification(false), 4000);
 		} catch (error) {
 			console.error('Error pengiriman:', error.response?.data || error);
 			const errorMsg = error.response?.data?.message || 'Gagal mengirim laporan.';
-			
+
 			setNotificationType('error');
 			setNotificationMessage(errorMsg);
 			setShowNotification(true);
@@ -169,22 +169,27 @@ export default function Laporan() {
 						<div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 							{myReports.map((r) => (
 								<div key={r.id} style={{ border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', backgroundColor: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.02)', borderLeft: '5px solid #cbd5e1', position: 'relative', transition: 'transform 0.2s' }}>
-									
+
 									<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', gap: '20px' }}>
 										<h3 style={{ margin: 0, fontSize: '19px', color: '#0f172a', fontWeight: '700', letterSpacing: '-0.01em' }}>{r.judul_laporan}</h3>
-									
-										<span style={{ 
-											padding: '6px 14px', borderRadius: '30px', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em',
-											backgroundColor: r.status === 'pending' ? '#fffae6' : r.status === 'diterima' ? '#fee2e2' : '#ecfdf5',
-											color: r.status === 'pending' ? '#b45309' : r.status === 'diterima' ? '#991b1b' : '#065f46',
-											border: `1px solid ${r.status === 'pending' ? '#fef08a' : r.status === 'diterima' ? '#fee2e2' : '#a7f3d0'}`
+
+										<span style={{
+											padding: '6px 14px',
+											borderRadius: '30px',
+											fontSize: '12px',
+											fontWeight: '700',
+											textTransform: 'uppercase',
+											letterSpacing: '0.05em',
+											backgroundColor: r.status === 'pending' ? '#fffae6' : r.status === 'diterima' ? '#ecfdf5' : '#fee2e2',
+											color: r.status === 'pending' ? '#b45309' : r.status === 'diterima' ? '#065f46' : '#991b1b',
+											border: `1px solid ${r.status === 'pending' ? '#fef08a' : r.status === 'diterima' ? '#a7f3d0' : '#fecaca'}`
 										}}>
 											{r.status === 'diterima' ? 'Blokir Disetujui' : r.status === 'ditolak' ? 'Laporan Ditolak' : r.status}
 										</span>
 									</div>
-									
+
 									<p style={{ color: '#475569', margin: '0 0 20px 0', lineHeight: '1.6', fontSize: '14.5px', whiteSpace: 'pre-wrap' }}>{r.keterangan}</p>
-									
+
 									<div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', fontSize: '13px', color: '#64748b', borderTop: '1px solid #f1f5f9', paddingTop: '14px', fontWeight: '500' }}>
 										<span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
 											<span style={{ filter: 'grayscale(0.3)' }}></span> Properti ID: <strong style={{ color: '#0f172a' }}>{r.properti_id}</strong>
@@ -225,16 +230,16 @@ export default function Laporan() {
 					borderRadius: '20px', textDecoration: 'none', fontSize: '14px',
 					fontWeight: '700', border: '1px solid #e5e7eb', cursor: 'pointer', transition: 'all 0.2s ease'
 				}}
-				onMouseOver={(e) => {
-					e.currentTarget.style.backgroundColor = '#0056b3';
-					e.currentTarget.style.color = 'white';
-					e.currentTarget.style.transform = 'translateX(-4px)';
-				}} 
-				onMouseOut={(e) => {
-					e.currentTarget.style.backgroundColor = '#f3f4f6';
-					e.currentTarget.style.color = '#1f2937';
-					e.currentTarget.style.transform = 'translateX(0)';
-				}}
+					onMouseOver={(e) => {
+						e.currentTarget.style.backgroundColor = '#0056b3';
+						e.currentTarget.style.color = 'white';
+						e.currentTarget.style.transform = 'translateX(-4px)';
+					}}
+					onMouseOut={(e) => {
+						e.currentTarget.style.backgroundColor = '#f3f4f6';
+						e.currentTarget.style.color = '#1f2937';
+						e.currentTarget.style.transform = 'translateX(0)';
+					}}
 				>
 					<span style={{ fontSize: '16px', fontWeight: 'bold' }}>←</span> Kembali ke Beranda
 				</Link>
@@ -268,7 +273,7 @@ export default function Laporan() {
 
 					<div style={{ marginBottom: '15px' }}>
 						<label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Judul Laporan</label>
-						<input type="text" value={judul} onChange={(e) => setJudul(e.target.value)} required 
+						<input type="text" value={judul} onChange={(e) => setJudul(e.target.value)} required
 							placeholder="Contoh: Info harga tidak sesuai / Iklan palsu"
 							style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
 					</div>

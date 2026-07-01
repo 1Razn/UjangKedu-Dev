@@ -17,6 +17,7 @@ import PropertySearch from "./components/property/PropertySearch.jsx";
 import Wishlist from './components/wishlist/wishlist.jsx';
 import Profile from "./components/profile/profile.jsx";
 import Register from "./components/register/Register.jsx";
+import KelolaProperti from "./components/kelola-properti/KelolaProperty.jsx";
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -67,6 +68,7 @@ export default function App() {
       <Route path="/profile" element={<WithChrome><Profile /></WithChrome>} />
       <Route path="/wishlist" element={<WithChrome><Wishlist /></WithChrome>} />
       <Route path="/search-custom" element={<WithChrome><PropertySearch /></WithChrome>} />
+      <Route path="/kelola-properti" element={<WithChrome><KelolaProperti /></WithChrome>} />
     </Routes>
   );
 }

@@ -3,14 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import http from "../../utils/http.js";
 import "./PropertyCard.css";
 
-// ✅ Tambahkan helper function untuk URL gambar
 const getImageUrl = (filename) => {
   if (!filename) return "";
-  // Jika sudah URL lengkap (http/https), kembalikan apa adanya
   if (filename.startsWith("http://") || filename.startsWith("https://")) {
     return filename;
   }
-  // Gunakan path relatif yang akan di-proxy oleh Vite ke backend
   return `/uploads/properti/${filename}`;
 };
 
@@ -20,7 +17,6 @@ export default function PropertyCard({ p }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Cek status wishlist saat component mount
   useEffect(() => {
     const checkWishlistStatus = async () => {
       try {

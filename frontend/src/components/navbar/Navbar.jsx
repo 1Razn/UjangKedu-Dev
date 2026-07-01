@@ -47,6 +47,7 @@ export default function Navbar() {
 
         <nav className={`navbar-links ${open ? "open" : ""}`}>
           <Link to="/wishlist" className="navbar-link">Wishlist</Link>
+          <Link to="/kelola-properti" className="navbar-link">Kelola Properti</Link>
           <Link to="/laporan" className="navbar-link">Laporan</Link>
           <Link to="/profile" className="navbar-link">Profile</Link>
           {user?.role === "Admin" && (
@@ -60,7 +61,7 @@ export default function Navbar() {
               <span className="user-greeting hide-sm">
                 <i className="fa-regular fa-user"></i> Halo, {user.nama}
               </span>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="btn-logout hide-sm"
               >
@@ -73,9 +74,9 @@ export default function Navbar() {
               <Link to="/register" className="btn-primary">Daftar</Link>
             </>
           )}
-          <button 
-            className="icon-btn show-sm" 
-            onClick={() => setOpen(!open)} 
+          <button
+            className="icon-btn show-sm"
+            onClick={() => setOpen(!open)}
             aria-label="Menu"
           >
             ☰
